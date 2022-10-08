@@ -1,17 +1,18 @@
 const fs = require("fs")
+const Product = require("./Product")
 
-class Product {
+// class Product {
 
-    constructor(title, price, thumbnail){
-        this.title = title
-        this.price = price
-        this.thumbnail = thumbnail
-        this.id = 0  
-    } 
+//     constructor(title, price, thumbnail){
+//         this.title = title
+//         this.price = price
+//         this.thumbnail = thumbnail
+//         this.id = 0  
+//     } 
 
-}
+// }
 
-
+// module.exports = Product
 
 class Container {
 
@@ -136,12 +137,29 @@ class Container {
         }
     }
 
+    updateById = async(id, body) => {
+        try {
+            const listOfProducts = await this.getAll()
+            const selected = listOfProducts.findIndex(el => el.id === id)
+            listOfProducts[selected] = {
+                id: id,
+                ...body
+            }
+            await fs.promises.writeFile(this.file, JSON.stringify(listOfProducts, null, 2))
+            return listOfProducts
+        }
+        catch(error) {
+            console.log(error)
+        }
+    }
+
 }
 
 // Exporting the class
 module.exports = Container
 
-const container1 = new Container("./file.txt") //Creates an instance of Container
+//Creates an instance of Container
+const container1 = new Container("./file.txt") 
 
 //Creates all products
 const product1 = new Product("Remera", "3500", "./remera")
@@ -153,13 +171,6 @@ const createProduct = async() => {
     await container1.save(product1)
     await container1.save(product2)
     await container1.save(product3)
-
-    //await container1.getById(2) //Show the product with the id 2 
-    //await container1.getAll() //Show all the products in the file
-    //await container1.deleteById(1) //Delete the product with the id 1
-    //await container1.getAll() //Show all the products in the file
-    //await container1.deleteAll() //Delete all the products
 }
 
 createProduct()
-
