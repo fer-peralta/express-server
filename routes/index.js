@@ -11,9 +11,9 @@ router.get("/", (req, res) =>{
 })
 
 router.get("/products", async(req, res) =>{
-    res.render("products", {productsList: await productsList.getAll()})
- })
-
+    const products = await productsList.getAll()
+    res.render("products", {products})
+})
 
 router.post("/products", async(req, res) =>{
     const newProduct = req.body

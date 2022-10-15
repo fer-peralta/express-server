@@ -6,11 +6,8 @@ const router = require("./routes/index.js")
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-const handlebars = require("express-handlebars")
-
-app.engine("handlebars", handlebars.engine())
 app.set("views", "./views")
-app.set("view engine", "handlebars")
+app.set("view engine", "pug")
 
 app.use("/", router)
 
