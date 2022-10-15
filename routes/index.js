@@ -7,12 +7,13 @@ const Product = require("../Product")
 const productsList = new Container("file.txt")
 
 router.get("/", (req, res) =>{
-   res.render("home")
+   res.render("./pages/home")
 })
 
 router.get("/products", async(req, res) =>{
     const products = await productsList.getAll()
-    res.render("products", {products})
+    console.log(products)
+    res.render("./pages/products", {products: products})
 })
 
 router.post("/products", async(req, res) =>{

@@ -1,26 +1,3 @@
 [
-  {
-    "title": "asd",
-    "price": "asd",
-    "thumbnail": "sds",
-    "id": 1
-  },
-  {
-    "title": "Remera",
-    "price": "3500",
-    "thumbnail": "./remera",
-    "id": 2
-  },
-  {
-    "title": "Pantalon",
-    "price": "8500",
-    "thumbnail": "./pantalon",
-    "id": 3
-  },
-  {
-    "title": "Zapatillas",
-    "price": "15700",
-    "thumbnail": "./zapatillas",
-    "id": 4
-  }
+  
 ]
