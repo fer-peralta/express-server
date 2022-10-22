@@ -1,0 +1,8 @@
+[
+  {
+    "title": "Camiseta",
+    "price": "15000",
+    "thumbnail": "sdas",
+    "id": 1
+  }
+]

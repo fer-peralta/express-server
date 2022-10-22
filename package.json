@@ -2,16 +2,24 @@
   "name": "03-entregable",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fer-peralta/express-server.git"
+  },
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fer-peralta/express-server/issues"
+  },
+  "homepage": "https://github.com/fer-peralta/express-server#readme",
   "dependencies": {
-    "express": "^4.18.1",
-    "express-handlebars": "^6.0.6"
+    "express": "^4.18.2",
+    "express-handlebars": "^6.0.6",
+    "nodemon": "^2.0.20",
+    "socket.io": "^4.5.3"
   }
 }

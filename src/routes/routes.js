@@ -4,22 +4,21 @@ const router = express.Router()
 const Container = require("../Container")
 const Product = require("../Product")
 
-const productsList = new Container("file.txt")
+const productsList = new Container("./src/file.txt")
 
-router.get("/", (req, res) =>{
-   res.render("home")
+router.get("/", async(req, res) =>{
+   res.render("home", {productsList: await productsList.getAll()})
 })
 
 router.get("/products", async(req, res) =>{
     res.render("products", {productsList: await productsList.getAll()})
- })
-
+})
 
 router.post("/products", async(req, res) =>{
     const newProduct = req.body
     const productToAdd = new Product(newProduct.title, newProduct.price, newProduct.thumbnail)
-    console.log(productToAdd)
     await productsList.save(productToAdd)
+    console.log("Se agregó el siguiente producto: \n\r", productToAdd)
     res.redirect("/")
 })
 

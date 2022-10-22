@@ -146,7 +146,7 @@ class Container {
 module.exports = Container
 
 //Creates an instance of Container
-const container1 = new Container("./file.txt") 
+const container1 = new Container("./src/file.txt") 
 
 //Creates all products
 const product1 = new Product("Remera", "3500", "./remera")
@@ -160,4 +160,5 @@ const createProduct = async() => {
     await container1.save(product3)
 }
 
-createProduct()
+// * Creating some products to show
+// createProduct()

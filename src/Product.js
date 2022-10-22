@@ -6,7 +6,7 @@ class Product {
         this.title = title
         this.price = price
         this.thumbnail = thumbnail
-        this.id = 0  
+        this.id  
     } 
 
 }
