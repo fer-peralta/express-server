@@ -1,18 +1,15 @@
 const express = require("express")
 const {Server} = require("socket.io")
-const Container = require("./Container")
-const Product = require("./Product")
+const fs = require("fs")
 
-
-// * Creating the container
-const container1 = new Container("./src/file.txt") 
+// * imports
+const {router, products, messages} = require("./routes/routes")
 
 // * We use the port that the enviroment provide or the 8080
 const PORT = process.env.PORT || 8080
 
 // * Importing express and the routes of the app
 const app = express()
-const router = require("./routes/routes.js")
 
 // * Read in JSON
 app.use(express.json())
@@ -37,22 +34,32 @@ const server = app.listen(PORT, ()=>{console.log(`Server listening in ${PORT}`)}
 const io = new Server(server)
 
 // * Connections Client-Server
-io.on("connection", (socket)=>{
+
+io.on("connection",(socket)=>{
+    // * Connected
     console.log(`El usuario con el id ${socket.id} se ha conectado`)
 
-    socket.emit("messageFromServer","Se ha conectado exitosamente al servidor")
-    
-    io.sockets.emit("sendHistorical", "Mensaje para todos",
-        
-    )
+    // * Sending the info to the new user
+    io.sockets.emit('products', products);
+	io.sockets.emit('chat', messages);
 
-    // socket.on("addProduct" 
-    //     console.log("Se agregó un producto")
-    //     console.log(data)
-    //     // const productAdded = new Product(data.title, data.price, data.thumbnail)
-    //     // container1.save(Product)
-    // )  
+    // * Message to the users
+    socket.broadcast.emit("Ha ingresado un nuevo usuario")
 
+    //* Receiving the new product and saving it in the file, then updating the list
+    socket.on('newProduct', newProduct =>{
+        products.push(newProduct)
+        fs.writeFileSync('./src/public/products.txt', JSON.stringify(products))
+        io.sockets.emit('sendProductList', products)
+    })
+
+    // * Receiving the message and saving it in the file, then update the chats
+    socket.on('newMessage', newMessage =>{
+        console.log(newMessage);
+        messages.push(newMessage)
+        fs.writeFileSync('./src/public/messages.txt', JSON.stringify(messages))
+        io.sockets.emit('chat', messages)
+    })
 })
 
 

@@ -1,22 +1,28 @@
-<h1>Listado de productos</h1>
+{{#if products}}
+  <h1>Listado de productos</h1>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Nombre</th>
-      <th scope="col">Precio</th>
-      <th scope="col">Icono</th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#each productsList}}
-    <tr>
-        <td>{{this.id}}</td>
-        <td>{{this.title}}</td>
-        <td>{{this.price}}</td>
-        <td>{{this.thumbnail}}</td>
-    </tr>
-    {{/each}}    
-  </tbody>
-</table>
+  <table class="table" id="table">
+    <thead>
+      <tr>
+        <th scope="col">Nombre</th>
+        <th scope="col">Precio</th>
+        <th scope="col">Icono</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      {{#each products}}
+      <tr>
+          <td>{{this.title}}</td>
+          <td>{{this.price}}</td>
+          <td>{{this.thumbnail}}</td>
+      </tr>
+      {{/each}}    
+    </tbody>
+  </table>
+
+  {{else}}
+  <h1>No se encontraron productos</h1>
+
+{{/if}}
+
+<a class="btn btn-primary" href="/chat">Chat</a>
