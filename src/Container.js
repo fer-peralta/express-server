@@ -1,19 +1,5 @@
 const fs = require("fs")
 const Product = require("./Product")
-
-// class Product {
-
-//     constructor(title, price, thumbnail){
-//         this.title = title
-//         this.price = price
-//         this.thumbnail = thumbnail
-//         this.id = 0  
-//     } 
-
-// }
-
-// module.exports = Product
-
 class Container {
 
     constructor(file) {
@@ -93,9 +79,8 @@ class Container {
     getAll = async() => {
         try {
             if(fs.existsSync(this.file)) { //If the file exist
-                const content = await fs.promises.readFile(this.file, "utf-8")
-                const products = JSON.parse(content)
-                return products
+                const content = JSON.parse(await fs.promises.readFile(this.file, "utf-8"))
+                return content
             }
             else { //If the file doesn't exist
                 console.log("No existe el archivo")
@@ -140,7 +125,10 @@ class Container {
     updateById = async(id, body) => {
         try {
             const listOfProducts = await this.getAll()
-            const selected = listOfProducts.findIndex(el => el.id === id)
+            console.log(listOfProducts)
+            
+            const selected = listOfProducts.findIndex(el => el.id == id)
+            console.log(selected)
             listOfProducts[selected] = {
                 id: id,
                 ...body
@@ -153,24 +141,63 @@ class Container {
         }
     }
 
+    async deleteCartProduct(id, id_prod){
+        try{
+            const cartSelected = await this.getById(id)
+            // console.log(cartSelected)            
+            const newCart = cartSelected.products.filter((e)=>e.id !== Number(id_prod))
+            console.log(newCart)
+            cartSelected.products = newCart
+            console.log(cartSelected)            
+            this.updateById(id,cartSelected)
+            return "El producto seleccionado fue eliminado"
+        }catch(error){
+            console.log(error);
+        }
+    }
+
+    async addCartProduct(id, body){
+        try {
+            const cartSelected = await this.getById(id)
+            cartSelected.products.push(body)
+            this.updateById(id, cartSelected)
+            return "Se agregó el producto al carrito"
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async newCart(){
+        try{
+            const data = await this.getAll()
+            const newId = await data.at(-1)
+            const newData = {id:(newId["id"] + 1), products:[], timestamp: Date.now()}
+            data.push(newData)
+            await fs.promises.writeFile(this.file, JSON.stringify(data, null, 2))            
+            return newData                
+        }catch(error){
+            console.log(error);
+        }
+    }
+
 }
 
 // Exporting the class
 module.exports = Container
 
 //Creates an instance of Container
-const container1 = new Container("./file.txt") 
+// const container1 = new Container("./file.txt") 
 
 //Creates all products
-const product1 = new Product("Remera", "3500", "./remera")
-const product2 = new Product("Pantalon", "8500", "./pantalon")
-const product3 = new Product("Zapatillas", "15700", "./zapatillas")
+const product1 = new Product("Remera", "3500", "./remera", 50, "Una linda remera")
+const product2 = new Product("Pantalon", "8500", "./pantalon", 25, "Un buen pantalón")
+const product3 = new Product("Zapatillas", "15700", "./zapatillas", 45, "Unas buenas zapatillas")
 
 const createProduct = async() => {
     // Saving products
-    await container1.save(product1)
-    await container1.save(product2)
-    await container1.save(product3)
+    // await container1.save(product1)
+    // await container1.save(product2)
+    // await container1.save(product3)
 }
 
-createProduct()
+// createProduct()
