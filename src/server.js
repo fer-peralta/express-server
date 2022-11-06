@@ -1,9 +1,14 @@
 const express = require("express")
 const {Server} = require("socket.io")
 const fs = require("fs")
+const Containersql = require("./managers/ContainerSql")
+const options = require("./config/dbConfig")
+
+const container = new Containersql(options.mariaDB, "products")
+const chatApi = new Containersql(options.sqliteDB,"chat")
 
 // * imports
-const {router, products, messages} = require("./routes/routes")
+const router = require("./routes/routes")
 
 // * We use the port that the enviroment provide or the 8080
 const PORT = process.env.PORT || 8080
@@ -22,7 +27,19 @@ app.set("views", "./src/public/views")
 app.set("view engine", "handlebars")
 
 // * Main route
-app.use("/", router)
+app.use("/api/products", router)
+
+app.get('/', async(req,res)=>{
+    res.render("home",{products: await container.getAll()})
+})
+
+app.get("/chat", async(req,res)=>{
+    res.render("chat",{messages: await chatApi.getAll()})
+})
+
+app.get("/products", async(req,res)=>{
+    res.render("chat",{products: await container.getAll()})
+})
 
 // * Public route
 app.use(express.static(__dirname+"/public"))
@@ -35,30 +52,28 @@ const io = new Server(server)
 
 // * Connections Client-Server
 
-io.on("connection",(socket)=>{
+io.on("connection",async(socket)=>{
     // * Connected
     console.log(`El usuario con el id ${socket.id} se ha conectado`)
 
     // * Sending the info to the new user
-    io.sockets.emit('products', products);
-	io.sockets.emit('chat', messages);
+    io.sockets.emit('products', await container.getAll());
+	io.sockets.emit('chat', await chatApi.getAll());
 
     // * Message to the users
     socket.broadcast.emit("Ha ingresado un nuevo usuario")
 
     //* Receiving the new product and saving it in the file, then updating the list
-    socket.on('newProduct', newProduct =>{
-        products.push(newProduct)
-        fs.writeFileSync('./src/public/products.txt', JSON.stringify(products))
-        io.sockets.emit('sendProductList', products)
+    socket.on('newProduct', async(newProduct) =>{
+        await container.save(newProduct);
+        io.sockets.emit("products", await container.getAll())
     })
 
     // * Receiving the message and saving it in the file, then update the chats
-    socket.on('newMessage', newMessage =>{
+    socket.on('newMessage', async(newMessage) =>{
         console.log(newMessage);
-        messages.push(newMessage)
-        fs.writeFileSync('./src/public/messages.txt', JSON.stringify(messages))
-        io.sockets.emit('chat', messages)
+        await chatApi.save(newMessage);
+        io.sockets.emit("chat", await chatApi.getAll())
     })
 })
 

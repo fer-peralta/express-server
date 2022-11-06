@@ -3,13 +3,14 @@ const socketClient = io()
 
 // * constant/variables
 const sendButton = document.querySelector("#sendButton")
-const inputTitle = document.querySelector("#title")
+const inputName = document.querySelector("#name")
 const inputPrice = document.querySelector("#price")
-const inputThumbnail = document.querySelector("#thumbnail")
+const inputUrl = document.querySelector("#url")
 const tableBody = document.querySelector("#tableBody")
 const messageInput = document.querySelector('#messageInput')
 const historicalChat = document.querySelector('#historicalChat')
 const sendMessage = document.querySelector('#sendMessage')
+const form = document.querySelector("#form")
 let user 
 
 // * Connected
@@ -18,12 +19,15 @@ socketClient.on("messageFromServer",(data)=>{
 })
 
 // * Sending the products to the server
-sendButton.addEventListener("click", () => {
-    socketClient.emit("newProduct",{
-        title: title.value,
-        price: price.value,
-        thumbnail: thumbnail.value
-    })
+sendButton.addEventListener("click", (evt) => {
+    evt.preventDefault()
+    const newProduct = {
+        name: inputName.value,
+        price: inputPrice.value,
+        url: inputUrl.value
+    }
+    socketClient.emit("newProduct", newProduct)
+    form.reset()
 })
 
 // * Receiving the list of products and showing them in the screen
@@ -32,9 +36,9 @@ socketClient.on("sendProductList", data =>{
     data.forEach(e => {
         list += 
             `<tr>
-                <td>${e.title}</td>
+                <td>${e.name}</td>
                 <td>${e.price}</td>
-                <td>${e.thumbnail}</td>
+                <td>${e.url}</td>
             </tr>`
     });
     tableBody.innerHTML = list
@@ -46,6 +50,7 @@ Swal.fire({
     text:'Ingrese su Email',
     input:'email',
     allowOutsideClick: false,
+    allowEscapeKey: false
 }).then(res=>{
     user=res.value
 })
@@ -54,8 +59,8 @@ Swal.fire({
 sendMessage.addEventListener('click', ()=>{
     socketClient.emit('newMessage',{
         userEmail: user,
-        message: messageInput.value,
-        hour: new Date()
+        timestamp: new Date(),
+        message: messageInput.value
     })
     messageInput.value=''
 })
@@ -67,7 +72,7 @@ socketClient.on('chat',(data)=>{
         element += `
                     <p class='text-success'>
                         <strong class='text-primary'>${e.userEmail}</strong> 
-                        <strong class='text-danger'>${e.hour}</strong>: ${e.message}
+                        <strong class='text-danger'>${e.timestamp}</strong>: ${e.message}
                     </p>
                     `
     });
