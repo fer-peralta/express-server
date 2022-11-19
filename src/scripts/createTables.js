@@ -1,46 +1,45 @@
-const options = require ("../config/dbConfig")
-const knex = require("knex")
+//importar las options
+import { options } from "../config/dbConfig.js";
 
-const database = knex(options.mariaDB)
-const dbSqlite = knex(options.sqliteDB)
+//importamos knex y utilizando las options nos conectamos a la base de datos.
+import knex from "knex";
 
-// * If the table products doesn't exist, it creates it
-const createTable = async() => {
-    const products = await database.schema.hasTable("products") 
+//creamos la instancia de la base de datos
+const databaseSqliteDb = knex(options.sqliteDB);
 
-    if(products){
-        await database.schema.dropTable("products")
-        .then(()=> console.log("Table products dropped"))
-        .finally(()=>database.destroy())
-    }
-    else {
-        await database.schema.createTable("products", table=>{
-            table.increments("id")
-            table.string("name", 30).nullable(false)
-            table.integer("price")
-            table.string("url", 200)
-        }).then(()=> console.log("Table products created"))
-        .catch(err=>console.log(err))
-        .finally(()=>database.destroy())
-    }
+//creamos la tabla de productos
+const createTables = async()=>{
     try {
-        const tableChatExists = await dbSqlite.schema.hasTable("chat");
-        if(tableChatExists){
-            await dbSqlite.schema.dropTable("chat")
+        //0. verificamos si la tabla ya existe
+        const tableProductsExists = await databaseSqliteDb.schema.hasTable("productos");
+        if(tableProductsExists){
+            await databaseSqliteDb.schema.dropTable("productos");
         }
-        await dbSqlite.schema.createTable("chat", table=>{
-            //campos de la tabla chat
+        //1.crear la tabla productos
+        await databaseSqliteDb.schema.createTable("productos",table=>{
             table.increments("id");
-            table.string("userEmail",30);
-            table.string("timestamp", 10);
-            table.string("message",200);
+            table.string("title",40).nullable(false);
+            table.integer("price").nullable(false);
+            table.string("thumbnail",200).nullable(false);
         });
-        console.log("chat table created");
-        dbSqlite.destroy();
+        console.log("productos table created");
+
+        //0. verificamos si la tabla ya existe
+        const tableCartExists = await databaseSqliteDb.schema.hasTable("carritos");
+        if(tableCartExists){
+            await databaseSqliteDb.schema.dropTable("carritos");
+        }
+        //1.crear la tabla productos
+        await databaseSqliteDb.schema.createTable("carritos",table=>{
+            table.increments("id");
+            table.string("timestamp").nullable(false);
+            table.string("products").nullable(false);
+        });
+        console.log("carritos table created");
     } catch (error) {
-        console.log(error)
+        console.log("hubo un error" + error);
     }
-     
+    databaseSqliteDb.destroy();
 }
 
-createTable()
+createTables();
