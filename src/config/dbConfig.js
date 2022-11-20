@@ -9,15 +9,6 @@ export const options = {
         pathProducts: 'productos.json',
         pathCarts: 'carritos.json',
     },
-    // mariaDB:{
-    //     client:"mysql",
-    //     connection:{
-    //         host:"127.0.0.1",
-    //         user:"root",
-    //         password:"",
-    //         database:"coderhousedb"
-    //     }
-    // },
     sqliteDB:{
         client:"sqlite3",
         connection:{

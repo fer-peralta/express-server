@@ -1,10 +1,11 @@
 import {options} from "../config/dbConfig.js";
+import mongoose from 'mongoose';
 
 let ContenedorDaoProductos;
 let ContenedorDaoCarritos;
 
 //identificador
-let databaseType = "sql";
+let databaseType = "mongo";
 
 switch(databaseType){
     case "archivos":
@@ -20,6 +21,25 @@ switch(databaseType){
         ContenedorDaoCarritos = new CarritosDaoSQL(options.sqliteDB,"carritos");
         break;
     case "mongo":
+        const URL = "mongodb+srv://ferguitarra1490:Guitarra,1490@ecommerce.vi3tez0.mongodb.net/?retryWrites=true&w=majority"
+        
+        mongoose.connect(URL, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        }, error =>{
+            if(error) throw new Error(`conexion fallida ${error}`)
+            console.log('conexion exitosa');
+        })
+
+        const {ProductosDaosMongo} = await import('./products/productsMongo.js')
+        const {productosSchema} = await import('../models/mongoAtlas.js')
+        const {productosCollection} = await import('../models/mongoAtlas.js')
+        ContenedorDaoProductos = new ProductosDaosMongo(productosCollection,productosSchema)
+
+        const {CarritoDaosMongo} = await import('./carts/cartsMongo.js')
+        const {carritosSchema} = await import('../models/mongoAtlas.js')
+        const {carritosCollection} = await import('../models/mongoAtlas.js')
+        ContenedorDaoCarritos = new CarritoDaosMongo(carritosCollection,carritosSchema)
         break;
 }
 
