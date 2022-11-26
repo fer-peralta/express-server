@@ -1,14 +1,19 @@
 const express = require("express")
-const {Server} = require("socket.io")
-const fs = require("fs")
-const Containersql = require("./managers/ContainerSql")
 const options = require("./config/dbConfig")
+const router = require("./routes/routes")
+const handlebars = require("express-handlebars")
+const {Server} = require("socket.io")
+const {normalize, schema} = require("normalizr")
+const { faker } = require('@faker-js/faker')
+const {commerce, datatype} = faker
 
+
+const ContenedorChat = require('./managers/ContenedorChat')
+
+const Containersql = require("./managers/ContainerSql")
 const container = new Containersql(options.mariaDB, "products")
 const chatApi = new Containersql(options.sqliteDB,"chat")
-
-// * imports
-const router = require("./routes/routes")
+// const chatApi = new ContenedorChat("chat.txt")
 
 // * We use the port that the enviroment provide or the 8080
 const PORT = process.env.PORT || 8080
@@ -21,7 +26,6 @@ app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
 // * HandleBars
-const handlebars = require("express-handlebars")
 app.engine("handlebars", handlebars.engine())
 app.set("views", "./src/public/views")
 app.set("view engine", "handlebars")
@@ -34,18 +38,62 @@ app.get('/', async(req,res)=>{
 })
 
 app.get("/chat", async(req,res)=>{
-    res.render("chat",{messages: await chatApi.getAll()})
+    res.render("partials/chat",{messages: await chatApi.getAll()})
 })
 
 app.get("/products", async(req,res)=>{
-    res.render("chat",{products: await container.getAll()})
+    res.render("partials/products",{products: await container.getAll()})
+})
+
+app.get("/products-test", (req,res)=>{
+    let test = []
+    for(let i= 0; i<5; i++){
+        test.push(
+            {
+                id : datatype.uuid(),
+                name : commerce.product(),
+                price : commerce.price(),
+                url : `${datatype.uuid()}.jpg`           
+            }
+        )
+    }
+    res.render("products-test",{products: test})
 })
 
 // * Public route
 app.use(express.static(__dirname+"/public"))
 
+// * schemas normalizr
+// * author schema
+const authorSchema = new schema.Entity("authors", {}, {idAttribute: "email"})
+
+// * message schema
+const messageSchema = new schema.Entity("messages", {author:authorSchema})
+
+// * chat schema, global schema
+
+const chatSchema = new schema.Entity("chat", {
+    messages:[messageSchema]
+    }, 
+    {idAttribute:"id"}
+)
+
+const normalizarData = (data)=>{
+    const normalizeData = normalize({id:"chatHistory", messages:data}, chatSchema);
+    return normalizeData;
+};
+
+const normalizarMensajes = async()=>{
+    const results = await chatApi.getAll();
+    const messagesNormalized = normalizarData(results);
+    return messagesNormalized;
+}
+
 // * Creating server in PORT
 const server = app.listen(PORT, ()=>{console.log(`Server listening in ${PORT}`)})
+
+// ? ---------------------------------------------------------------
+// ? ---------------------------------------------------------------
 
 // * Connecting Web Socket with server
 const io = new Server(server)
@@ -58,7 +106,7 @@ io.on("connection",async(socket)=>{
 
     // * Sending the info to the new user
     io.sockets.emit('products', await container.getAll());
-	io.sockets.emit('chat', await chatApi.getAll());
+	io.sockets.emit('chat', await normalizarMensajes());
 
     // * Message to the users
     socket.broadcast.emit("Ha ingresado un nuevo usuario")
@@ -71,9 +119,8 @@ io.on("connection",async(socket)=>{
 
     // * Receiving the message and saving it in the file, then update the chats
     socket.on('newMessage', async(newMessage) =>{
-        console.log(newMessage);
         await chatApi.save(newMessage);
-        io.sockets.emit("chat", await chatApi.getAll())
+        io.sockets.emit("chat", await normalizarMensajes())
     })
 })
 
