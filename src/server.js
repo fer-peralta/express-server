@@ -12,8 +12,8 @@ const ContenedorChat = require('./managers/ContenedorChat')
 
 const Containersql = require("./managers/ContainerSql")
 const container = new Containersql(options.mariaDB, "products")
-const chatApi = new Containersql(options.sqliteDB,"chat")
-// const chatApi = new ContenedorChat("chat.txt")
+// const chatApi = new Containersql(options.sqliteDB,"chat")
+const chatApi = new ContenedorChat("chat.txt")
 
 // * We use the port that the enviroment provide or the 8080
 const PORT = process.env.PORT || 8080
@@ -85,7 +85,13 @@ const normalizarData = (data)=>{
 
 const normalizarMensajes = async()=>{
     const results = await chatApi.getAll();
+    let sinNormalizarTamaño = JSON.stringify(results).length
     const messagesNormalized = normalizarData(results);
+    let normalizadoTamaño = JSON.stringify(messagesNormalized).length
+    // let porcentajeCompresion = (1 -(normalizadoTamaño / sinNormalizarTamaño))*100
+    porcentajeCompresion = (1 -(normalizadoTamaño / sinNormalizarTamaño))*100
+    console.log(porcentajeCompresion)
+    io.sockets.emit("compressPercent", porcentajeCompresion)
     return messagesNormalized;
 }
 

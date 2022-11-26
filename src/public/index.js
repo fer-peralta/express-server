@@ -95,7 +95,6 @@ const chatSchema = new normalizr.schema.Entity("chat", {messages:[messageSchema]
 
 // * Receiving the messages and showing them in the screen
 socketClient.on('chat', async(dataMsg)=>{
-    console.log(dataMsg)
     const normalData = normalizr.denormalize(dataMsg.result, chatSchema, dataMsg.entities)
     let messageElements = ""
     normalData.messages.forEach(msg => {
@@ -107,4 +106,8 @@ socketClient.on('chat', async(dataMsg)=>{
                     `
     })
     historicalChat.innerHTML = messageElements
+})
+
+socketClient.on("compressPercent", porcentajeCompresion=>{
+    console.log(`El porcentaje de compresión actual es ${porcentajeCompresion}`)
 })
