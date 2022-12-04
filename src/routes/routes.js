@@ -2,6 +2,10 @@ const express = require('express');
 const ContenedorSql = require("../managers/Containersql");
 const options = require("../config/dbConfig");
 
+const {Cookie} = require("express-session")
+const session = require("express-session")
+const MongoStore = require ('connect-mongo')
+
 const router = express.Router();
 
 const productosApi = new ContenedorSql(options.mariaDB, "products");
@@ -38,6 +42,47 @@ router.delete('/:id',async(req,res)=>{
     const productId = req.params.id;
     const result = await productosApi.deleteById(parseInt(productId));
     res.send(result);
+})
+
+// ? --------------------------------------
+
+// * Session and cookies routes
+
+router.get('/login',(req,res)=>{
+    
+    const {userName, password} = req.query
+    if(req.session.userName){
+        res.redirect('./perfil')
+    }else{
+        if(userName){
+            req.session.userName = userName
+            res.render('form',{userName})
+        }else{
+            res.render('login')
+        }
+    }
+    
+})
+
+const checkUser = (req,res,next)=>{
+    if(req.session.userName){
+        console.log(req.session.userName);
+        next()
+    }else{
+        res.redirect('./login')
+    }
+}
+
+
+router.get('/perfil',checkUser,(req,res)=>{
+    res.render('form',{userName:req.session.userName})
+})
+
+router.get('/logout',(req,res)=>{
+    req.session.destroy()
+    setTimeout(()=>{
+            res.redirect('./login')
+    },3000)
 })
 
 module.exports = router

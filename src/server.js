@@ -11,6 +11,8 @@ const session = require("express-session")
 const cookieParser = require('cookie-parser')
 const MongoStore = require('connect-mongo')
 
+// ? ---------------------------------
+
 const ContenedorChat = require('./managers/ContenedorChat')
 
 const Containersql = require("./managers/ContainerSql")
@@ -32,6 +34,26 @@ app.use(express.urlencoded({extended: true}))
 app.engine("handlebars", handlebars.engine())
 app.set("views", "./src/public/views")
 app.set("view engine", "handlebars")
+
+// ? ---------------------------------------------------------
+
+// * Cookies y session
+
+app.use(cookieParser())
+
+app.use(session({
+    store: MongoStore.create({
+        mongoUrl:'mongodb+srv://ferguitarra1490:Guitarra,1490@ecommerce.vi3tez0.mongodb.net/sessionsDB?retryWrites=true&w=majority'
+    }),
+    secret:"claveSecreta",
+    resave:false,
+    saveUninitialized:false,
+    cookie:{
+        maxAge:600000
+    }
+}))
+
+// ? --------------------------------------------------------
 
 // * Main route
 app.use("/api/products", router)
@@ -62,6 +84,76 @@ app.get("/products-test", (req,res)=>{
     }
     res.render("products-test",{products: test})
 })
+
+// * Session and cookies routes
+
+// app.get("/login", (req,res)=>{
+//     const {user} = req.query
+//     if(req.session.username){
+//         return res.redirect("/profile")
+//     } else {
+//         if(user){
+//             req.session.username = user
+//             res.send("Sesión iniciada")
+//         } else {
+//             res.send("por favor ingresa el usuario")
+//         }
+//     }
+// })
+
+// app.get("profile", (req, res)=>{
+//     console.log(req.session)
+//     if(req.session.username){
+//         req.send(`Bienvenido ${req.session.username}`)
+//     } else {
+//         res.redirect("/login")
+//     }
+// })
+
+// app.get("/logout", (req,res)=>{
+//     req.session.destroy()
+//     res.send("Sesión finalizada")
+// })
+
+app.get('/login',(req,res)=>{
+    
+    const {userName, password} = req.query
+    if(req.session.userName){
+        res.redirect('./perfil')
+    }else{
+        if(userName){
+            req.session.userName = userName
+            res.render('home',{userName})
+        }else{
+            res.render('login')
+        }
+    }
+    
+})
+
+const checkUser = (req,res,next)=>{
+    if(req.session.userName){
+        console.log(req.session.userName);
+        next()
+    }else{
+        res.redirect('./login')
+    }
+}
+
+
+app.get('/perfil',checkUser,(req,res)=>{
+    res.render('home',{userName:req.session.userName})
+})
+
+app.get('/logout',(req,res)=>{
+    req.session.destroy()
+    setTimeout(()=>{
+            res.redirect('./login')
+    },3000)
+})
+
+
+
 
 // * Public route
 app.use(express.static(__dirname+"/public"))
@@ -133,21 +225,7 @@ io.on("connection",async(socket)=>{
     })
 })
 
-// ? ---------------------------------------------------------
 
-// * Cookies y session
 
-app.use(cookieParser())
 
-app.use(session({
-    store: MongoStore.create({
-        mongoUrl:'mongodb+srv://ferguitarra1490:Guitarra,1490@ecommerce.vi3tez0.mongodb.net/sessionsDB?retryWrites=true&w=majority'
-    }),
-    secret:"claveSecreta",
-    resave:false,
-    saveUninitialized:false,
-    cookie:{
-        maxAge:600000
-    }
-}))
 
