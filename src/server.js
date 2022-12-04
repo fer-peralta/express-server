@@ -6,7 +6,10 @@ const {Server} = require("socket.io")
 const {normalize, schema} = require("normalizr")
 const { faker } = require('@faker-js/faker')
 const {commerce, datatype} = faker
-
+// * - session -
+const session = require("express-session")
+const cookieParser = require('cookie-parser')
+const MongoStore = require('connect-mongo')
 
 const ContenedorChat = require('./managers/ContenedorChat')
 
@@ -130,4 +133,21 @@ io.on("connection",async(socket)=>{
     })
 })
 
+// ? ---------------------------------------------------------
+
+// * Cookies y session
+
+app.use(cookieParser())
+
+app.use(session({
+    store: MongoStore.create({
+        mongoUrl:'mongodb+srv://ferguitarra1490:Guitarra,1490@ecommerce.vi3tez0.mongodb.net/sessionsDB?retryWrites=true&w=majority'
+    }),
+    secret:"claveSecreta",
+    resave:false,
+    saveUninitialized:false,
+    cookie:{
+        maxAge:600000
+    }
+}))
 
