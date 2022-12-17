@@ -1,6 +1,6 @@
-const knex = require("knex");
+import knex from "knex"
 
-class ContenedorMysql{
+class Containersql{
     constructor(options, tableName){
         this.database = knex(options);
         this.tableName = tableName;
@@ -36,4 +36,4 @@ class ContenedorMysql{
     }
 }
 
-module.exports = ContenedorMysql;
+export {Containersql}

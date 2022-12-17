@@ -1,49 +1,62 @@
-const express = require("express")
-const options = require("./config/dbConfig")
-const router = require("./routes/routes")
-const handlebars = require("express-handlebars")
-const {Server} = require("socket.io")
-const {normalize, schema} = require("normalizr")
-const { faker } = require('@faker-js/faker')
-const {commerce, datatype} = faker
-// * - session -
-const session = require("express-session")
-const cookieParser = require('cookie-parser')
-const MongoStore = require('connect-mongo')
+import express from "express"
+import router from "./routes/routes.js"
+import routerInfo from "./routes/routerInfo.js"
+import {options} from "./config/dbConfig.js"
+import {config} from "./config/config.js"
+import handlebars from "express-handlebars"
+import {Server} from "socket.io"
+import {normalize, schema} from "normalizr"
+// import faker from '@faker-js/faker'
+// import {commerce, datatype} from  "@faker-js/faker"
+// * - Session -
+import session from "express-session"
+import cookieParser from 'cookie-parser'
+import mongoose from 'mongoose'
+import MongoStore from 'connect-mongo'
+// * - Authentication -
+import bcrypt from "bcrypt"
+import passport from "passport"
+import { Strategy as LocalStrategy } from 'passport-local'
+import {UserModel} from './model/users.js'
+
+import path from "path"
+import {fileURLToPath} from 'url'
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // ? ---------------------------------
 
-const ContenedorChat = require('./managers/ContenedorChat')
+import {ContenedorChat} from './managers/ContenedorChat.js'
+import {Containersql} from "./managers/ContainerSql.js"
 
-const Containersql = require("./managers/ContainerSql")
 const container = new Containersql(options.mariaDB, "products")
 // const chatApi = new Containersql(options.sqliteDB,"chat")
 const chatApi = new ContenedorChat("chat.txt")
 
-// * We use the port that the enviroment provide or the 8080
-const PORT = process.env.PORT || 8080
-
-// * Importing express and the routes of the app
 const app = express()
 
 // * Read in JSON
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-// * HandleBars
+// * We use the port that the enviroment provide or the 8080
+const PORT = process.env.PORT || 8080
+const server = app.listen(PORT, ()=>{console.log(`Server listening in ${PORT}`)})
+
+// * HandleBars & views
 app.engine("handlebars", handlebars.engine())
 app.set("views", "./src/public/views")
 app.set("view engine", "handlebars")
 
 // ? ---------------------------------------------------------
 
-// * Cookies y session
+// * Cookies, session
 
 app.use(cookieParser())
 
 app.use(session({
     store: MongoStore.create({
-        mongoUrl:'mongodb+srv://ferguitarra1490:Guitarra,1490@ecommerce.vi3tez0.mongodb.net/sessionsDB?retryWrites=true&w=majority'
+        mongoUrl: config.MONGO_SESSION
     }),
     secret:"claveSecreta",
     resave:false,
@@ -55,8 +68,93 @@ app.use(session({
 
 // ? --------------------------------------------------------
 
+// * Authentication DB
+const mongoUrl = config.MONGO_AUTENTICATION
+
+mongoose.connect(mongoUrl, {
+    useNewUrlParser: true,
+    useUnifiedTopology:true
+}, (err)=>{
+    if(err) return console.log(`hubo un error: ${err}`);
+    console.log('conexion a base de datos exitosa');
+})
+
+// * Passport
+
+app.use(passport.initialize())
+app.use(passport.session())
+
+// * Serializing
+passport.serializeUser((user,done)=>{
+    done(null, user.id)
+})
+
+passport.deserializeUser((id, done)=>{
+    UserModel.findById(id,(error, userFound)=>{
+        if(error) return done(error)
+        return done(null,userFound)
+    })
+})
+
+// * Encrypt password
+const createHash = (password)=>{
+    const hash = bcrypt.hashSync(password,bcrypt.genSaltSync(10))
+    return hash
+}
+// * Validate the password
+const isValidPassword = (user, password)=>{
+    return bcrypt.compareSync(password, user.password);
+}
+
+// * Passport Strategy create User
+passport.use('signupStrategy', new LocalStrategy({
+    passReqToCallback:true,
+    usernameField: "email",
+},
+    (req,username,password,done)=>{
+        console.log(username);
+        UserModel.findOne({username:username}, (error,userFound)=>{
+            if (error) return done(error,null,{message:'hubo un error'})
+            if(userFound) return done(null,null,{message:'el usuario existe'}) 
+            const newUser = {
+                name: req.body.name,
+                username:username,
+                password:createHash(password)
+            }
+            console.log(newUser);
+            UserModel.create(newUser, (error,userCreated)=>{
+                if(error) return done(error,null, {message:'error al registrar'})
+                return done(null, userCreated,{message:'usuario creado'})
+            })
+        })
+    }
+))
+
+// * Passport Strategy Login
+passport.use('loginStrategy', new LocalStrategy(
+    (username, password, done) => {
+        console.log(username);
+        UserModel.findOne({ username: username }, (err, user)=> {
+            console.log(user);
+            if (err) return done(err);
+            if (!user) return done(null, false);
+            if (!user.password) return done(null, false);
+            if (!isValidPassword(user,password)){
+                console.log('existen datos')
+                return done(null,false,{message:'Contraseña inválida'})
+            }
+            return done(null, user);
+        });
+    }
+))
+
+// ? ------------------------------------------------------
+
+
+
 // * Main route
 app.use("/api/products", router)
+app.use("/api/info", routerInfo)
 
 app.get('/', async(req,res)=>{
     res.render("home",{products: await container.getAll()})
@@ -70,95 +168,67 @@ app.get("/products", async(req,res)=>{
     res.render("partials/products",{products: await container.getAll()})
 })
 
-app.get("/products-test", (req,res)=>{
-    let test = []
-    for(let i= 0; i<5; i++){
-        test.push(
-            {
-                id : datatype.uuid(),
-                name : commerce.product(),
-                price : commerce.price(),
-                url : `${datatype.uuid()}.jpg`           
-            }
-        )
-    }
-    res.render("products-test",{products: test})
+// app.get("/products-test", (req,res)=>{
+//     let test = []
+//     for(let i= 0; i<5; i++){
+//         test.push(
+//             {
+//                 id : datatype.uuid(),
+//                 name : commerce.product(),
+//                 price : commerce.price(),
+//                 url : `${datatype.uuid()}.jpg`           
+//             }
+//         )
+//     }
+//     res.render("products-test",{products: test})
+// })
+
+app.get('/registro', async(req,res)=>{
+    const errorMessage = req.session.messages ? req.session.messages[0] : '';
+    console.log(req.session);
+    res.render('signup',{error:errorMessage})
+    req.session.messages = []
 })
 
-// * Session and cookies routes
-
-// app.get("/login", (req,res)=>{
-//     const {user} = req.query
-//     if(req.session.username){
-//         return res.redirect("/profile")
-//     } else {
-//         if(user){
-//             req.session.username = user
-//             res.send("Sesión iniciada")
-//         } else {
-//             res.send("por favor ingresa el usuario")
-//         }
-//     }
-// })
-
-// app.get("profile", (req, res)=>{
-//     console.log(req.session)
-//     if(req.session.username){
-//         req.send(`Bienvenido ${req.session.username}`)
-//     } else {
-//         res.redirect("/login")
-//     }
-// })
-
-// app.get("/logout", (req,res)=>{
-//     req.session.destroy()
-//     res.send("Sesión finalizada")
-// })
-
-app.get('/login',(req,res)=>{
-    
-    const {userName, password} = req.query
-    if(req.session.userName){
-        res.redirect('./perfil')
-    }else{
-        if(userName){
-            req.session.userName = userName
-            res.render('home',{userName})
-        }else{
-            res.render('login')
-        }
-    }
-    
+app.get('/inicio-sesion', (req,res)=>{
+    res.render('login')
 })
 
-const checkUser = (req,res,next)=>{
-    if(req.session.userName){
-        console.log(req.session.userName);
-        next()
+app.post('/signup',passport.authenticate('signupStrategy',{
+    failureRedirect:'/registro',
+    failureMessage:true
+}),(req,res)=>{
+    res.redirect('/perfil')
+})
+
+app.post('/login',passport.authenticate('loginStrategy',{
+    failureRedirect: '/inicio-sesion',
+    failureMessage:true
+}),
+(req,res)=>{
+    res.redirect('/perfil')
+})
+
+app.get('/perfil',async(req,res)=>{
+    if(req.isAuthenticated()){
+        let {name} = req.user
+        res.render('home',{user:name})
     }else{
-        res.redirect('./login')
+        res.send("<div>Debes <a href='/inicio-sesion'>iniciar sesion</a> o <a href='/registro'>registrarte</a></div>")
     }
-}
-
-
-app.get('/perfil',checkUser,(req,res)=>{
-    res.render('home',{userName:req.session.userName})
 })
 
 app.get('/logout',(req,res)=>{
     req.session.destroy()
     setTimeout(()=>{
-            res.redirect('./login')
+            res.redirect('./inicio-sesion')
     },3000)
 })
-
-
-
 
 // * Public route
 app.use(express.static(__dirname+"/public"))
 
-// * schemas normalizr
+// * Schemas normalizr
 // * author schema
 const authorSchema = new schema.Entity("authors", {}, {idAttribute: "email"})
 
@@ -173,6 +243,7 @@ const chatSchema = new schema.Entity("chat", {
     {idAttribute:"id"}
 )
 
+// * Normalize data
 const normalizarData = (data)=>{
     const normalizeData = normalize({id:"chatHistory", messages:data}, chatSchema);
     return normalizeData;
@@ -183,15 +254,12 @@ const normalizarMensajes = async()=>{
     let sinNormalizarTamaño = JSON.stringify(results).length
     const messagesNormalized = normalizarData(results);
     let normalizadoTamaño = JSON.stringify(messagesNormalized).length
-    // let porcentajeCompresion = (1 -(normalizadoTamaño / sinNormalizarTamaño))*100
-    porcentajeCompresion = (1 -(normalizadoTamaño / sinNormalizarTamaño))*100
+    let porcentajeCompresion = (1 -(normalizadoTamaño / sinNormalizarTamaño))*100
+    // porcentajeCompresion = (1 -(normalizadoTamaño / sinNormalizarTamaño))*100
     console.log(porcentajeCompresion)
     io.sockets.emit("compressPercent", porcentajeCompresion)
     return messagesNormalized;
 }
-
-// * Creating server in PORT
-const server = app.listen(PORT, ()=>{console.log(`Server listening in ${PORT}`)})
 
 // ? ---------------------------------------------------------------
 // ? ---------------------------------------------------------------

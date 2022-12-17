@@ -1,5 +1,5 @@
-const { faker } = require('@faker-js/faker')
-const {commerce, datatype} = faker
+import faker from '@faker-js/faker'
+import {commerce, datatype} from '@faker-js/faker'
 
 let productsTest = []
 
