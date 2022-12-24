@@ -1,0 +1,3 @@
+
+2022/12/24 16:17:02 [error] 20840#18660: *1 CreateFile() "C:\Users\fergu\OneDrive\Escritorio\Full Stack CoderHouse\04 Backend\Proyecto Back-end\03 entregable\nginx/html/favicon.ico" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost", referrer: "http://localhost/"
+2022/12/24 16:50:46 [error] 20840#18660: *6 CreateFile() "C:\Users\fergu\OneDrive\Escritorio\Full Stack CoderHouse\04 Backend\Proyecto Back-end\03 entregable\nginx/html/api/products" failed (3: The system cannot find the path specified), client: 127.0.0.1, server: localhost, request: "GET /api/products HTTP/1.1", host: "localhost"

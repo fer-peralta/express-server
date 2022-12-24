@@ -1,0 +1,4 @@
+#Modo Fork
+pm2 start src/index.js --name="Server1" --watch -- 8081
+#Modo Cluster
+pm2 start src/index.js --name="Server2" -i 0 --watch -- 8081 

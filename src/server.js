@@ -24,6 +24,10 @@ import {fileURLToPath} from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+import parseArgs from "minimist"
+import cluster from "cluster"
+import os from "os"
+
 // ? ---------------------------------
 
 import {ContenedorChat} from './managers/ContenedorChat.js'
@@ -35,13 +39,106 @@ const chatApi = new ContenedorChat("chat.txt")
 
 const app = express()
 
+// ? ---------------------------------
+
+// * Arguments
+const argOptions = {alias:{m:"mode"}, default:{mode: "FORK"}}
+const objArguments = parseArgs(process.argv.slice(2), argOptions)
+
+// console.log("objArguments", objArguments)
+
+const mode = objArguments.mode
+
+// ? --------------------------------------------------------
+
+if(mode === "CLUSTER" && cluster.isPrimary){
+    console.log("CLUSTER mode")
+    const numCPUS = os.cpus().length // * number of processors
+    console.log(`Numero de procesadores: ${numCPUS}`)
+
+    for(let i=0;i<numCPUS;i++){
+        cluster.fork() // * subprocess
+        console.log("cluster created")
+    }
+
+    cluster.on("exit", (worker)=>{
+        console.log(`El subproceso ${worker.process.pid} falló`)
+        cluster.fork()
+    })
+}
+else {
+    console.log("FORK mode")
+    // * We use the port that the enviroment provide or the 8080
+    const PORT = process.argv[2] || 8080
+    const server = app.listen(PORT, ()=>{console.log(`Server listening in ${PORT} on process ${process.pid}`)})
+
+    // * Connecting Web Socket with server
+    const io = new Server(server)
+
+    // * Connections Client-Server
+
+    io.on("connection",async(socket)=>{
+        // * Connected
+        console.log(`El usuario con el id ${socket.id} se ha conectado`)
+
+        // * Sending the info to the new user
+        io.sockets.emit('products', await container.getAll());
+        io.sockets.emit('chat', await normalizarMensajes());
+
+        // * Message to the users
+        socket.broadcast.emit("Ha ingresado un nuevo usuario")
+
+        //* Receiving the new product and saving it in the file, then updating the list
+        socket.on('newProduct', async(newProduct) =>{
+            await container.save(newProduct);
+            io.sockets.emit("products", await container.getAll())
+        })
+
+        // * Receiving the message and saving it in the file, then update the chats
+        socket.on('newMessage', async(newMessage) =>{
+            await chatApi.save(newMessage);
+            io.sockets.emit("chat", await normalizarMensajes())
+        })
+    })
+
+    const authorSchema = new schema.Entity("authors", {}, {idAttribute: "email"})
+
+    // * message schema
+    const messageSchema = new schema.Entity("messages", {author:authorSchema})
+
+    // * chat schema, global schema
+
+    const chatSchema = new schema.Entity("chat", {
+        messages:[messageSchema]
+        }, 
+        {idAttribute:"id"}
+    )
+
+    // * Normalize data
+    const normalizarData = (data)=>{
+        const normalizeData = normalize({id:"chatHistory", messages:data}, chatSchema);
+        return normalizeData;
+    };
+
+    const normalizarMensajes = async()=>{
+        const results = await chatApi.getAll();
+        let sinNormalizarTamaño = JSON.stringify(results).length
+        const messagesNormalized = normalizarData(results);
+        let normalizadoTamaño = JSON.stringify(messagesNormalized).length
+        let porcentajeCompresion = (1 -(normalizadoTamaño / sinNormalizarTamaño))*100
+        // porcentajeCompresion = (1 -(normalizadoTamaño / sinNormalizarTamaño))*100
+        console.log(porcentajeCompresion)
+        io.sockets.emit("compressPercent", porcentajeCompresion)
+        return messagesNormalized;
+    }
+}
+
+
 // * Read in JSON
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-// * We use the port that the enviroment provide or the 8080
-const PORT = process.env.PORT || 8080
-const server = app.listen(PORT, ()=>{console.log(`Server listening in ${PORT}`)})
+
 
 // * HandleBars & views
 app.engine("handlebars", handlebars.engine())
@@ -264,34 +361,7 @@ const normalizarMensajes = async()=>{
 // ? ---------------------------------------------------------------
 // ? ---------------------------------------------------------------
 
-// * Connecting Web Socket with server
-const io = new Server(server)
 
-// * Connections Client-Server
-
-io.on("connection",async(socket)=>{
-    // * Connected
-    console.log(`El usuario con el id ${socket.id} se ha conectado`)
-
-    // * Sending the info to the new user
-    io.sockets.emit('products', await container.getAll());
-	io.sockets.emit('chat', await normalizarMensajes());
-
-    // * Message to the users
-    socket.broadcast.emit("Ha ingresado un nuevo usuario")
-
-    //* Receiving the new product and saving it in the file, then updating the list
-    socket.on('newProduct', async(newProduct) =>{
-        await container.save(newProduct);
-        io.sockets.emit("products", await container.getAll())
-    })
-
-    // * Receiving the message and saving it in the file, then update the chats
-    socket.on('newMessage', async(newMessage) =>{
-        await chatApi.save(newMessage);
-        io.sockets.emit("chat", await normalizarMensajes())
-    })
-})
 
 
 

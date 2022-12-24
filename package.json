@@ -6,7 +6,17 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon src/server.js"
+    "start": "nodemon src/server.js",
+    "create-tables": "node src/scripts/createTables.js",
+    "cluster-mode": "node src/server.js -m CLUSTER",
+    "forever-mode": " forever start src/server.js",
+    "babel-build": "babel src -d build",
+    "babel-server": "babel src/server.js -o src/index.js",
+    "pm2-fork": "pm2 start src/index.js",
+    "pm2-cluster": "pm2 start src/index.js -i 0",
+    "ngix-cluster": "node src/server.js -p 8081 -m CLUSTER",
+    "ngix-fork": "node src/server.js -p 8080"
+
   },
   "repository": {
     "type": "git",
@@ -20,6 +30,7 @@
   "homepage": "https://github.com/fer-peralta/express-server#readme",
   "dependencies": {
     "@faker-js/faker": "^7.6.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "bcrypt": "^5.1.0",
     "connect-mongo": "^4.6.0",
     "cookie-parser": "^1.4.6",
@@ -28,6 +39,7 @@
     "express-handlebars": "^6.0.6",
     "express-session": "^1.17.3",
     "knex": "^2.3.0",
+    "minimist": "^1.2.7",
     "mongoose": "^6.8.0",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.20",
@@ -36,5 +48,9 @@
     "passport-local": "^1.0.0",
     "socket.io": "^4.5.3",
     "sqlite3": "^5.1.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0"
   }
 }

@@ -1,5 +1,6 @@
 import express, { application } from 'express'
 import {fork} from 'child_process'
+import os from "os"
 
 const routerInfo = express.Router()
 
@@ -10,7 +11,8 @@ routerInfo.get('/',(req,res)=>{
     Path_de_ejecución : process.execPath,
     Proceso_ID : process.pid,
     Memoria_en_uso: process.memoryUsage().rss,
-    Directorio :process.cwd()
+    Directorio :process.cwd(),
+    Número_de_procesadores: os.cpus().length
 })
 })
 
