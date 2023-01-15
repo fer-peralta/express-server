@@ -15,6 +15,8 @@
     "pm2-fork": "pm2 start src/index.js",
     "pm2-cluster": "pm2 start src/index.js -i 0",
     "ngix-cluster": "node src/server.js -p 8081 -m CLUSTER",
+    "artillery-fork": "artillery quick --count 20 -n 50 http://localhost:8080/api/info?max=100000 > result_fork.txt",
+    "artillery-cluster": "artillery quick --count 20 -n 50 http://localhost:8080/api/info?max=100000 > result_cluster.txt",
     "ngix-fork": "node src/server.js -p 8080"
   },
   "repository": {

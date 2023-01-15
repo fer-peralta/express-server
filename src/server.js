@@ -47,7 +47,7 @@ const app = express()
 // ? ---------------------------------
 
 // * Arguments
-const argOptions = {alias:{m:"mode"}, default:{mode: "FORK"}}
+const argOptions = {alias:{m:"mode"}, default:{mode: "CLUSTER"}}
 const objArguments = parseArgs(process.argv.slice(2), argOptions)
 
 // logger.info("objArguments", objArguments)
@@ -60,6 +60,7 @@ if(mode === "CLUSTER" && cluster.isPrimary){
     logger.info("CLUSTER mode")
     const numCPUS = os.cpus().length // * number of processors
     logger.info(`Numero de procesadores: ${numCPUS}`)
+    logger.info(`PID MASTER ${process.pid}`)
 
     for(let i=0;i<numCPUS;i++){
         cluster.fork() // * subprocess
@@ -67,7 +68,7 @@ if(mode === "CLUSTER" && cluster.isPrimary){
     }
 
     cluster.on("exit", (worker)=>{
-        logArchivoError.error(`El subproceso ${worker.process.pid} falló`)
+        logArchivoError.error(`El subproceso ${worker.process.pid} falló ${new Date().toLocaleString()}`)
         cluster.fork()
     })
 }
