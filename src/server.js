@@ -47,7 +47,7 @@ const app = express()
 // ? ---------------------------------
 
 // * Arguments
-const argOptions = {alias:{m:"mode"}, default:{mode: "CLUSTER"}}
+const argOptions = {alias:{m:"mode"}, default:{mode: "FORK"}}
 const objArguments = parseArgs(process.argv.slice(2), argOptions)
 
 // logger.info("objArguments", objArguments)
