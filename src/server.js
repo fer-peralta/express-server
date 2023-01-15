@@ -28,6 +28,11 @@ import parseArgs from "minimist"
 import cluster from "cluster"
 import os from "os"
 
+import { logger } from "./logger.js"
+import { logArchivoWarn } from "./logger.js"
+import { logArchivoError } from "./logger.js"
+
+
 // ? ---------------------------------
 
 import {ContenedorChat} from './managers/ContenedorChat.js'
@@ -45,32 +50,32 @@ const app = express()
 const argOptions = {alias:{m:"mode"}, default:{mode: "FORK"}}
 const objArguments = parseArgs(process.argv.slice(2), argOptions)
 
-// console.log("objArguments", objArguments)
+// logger.info("objArguments", objArguments)
 
 const mode = objArguments.mode
 
 // ? --------------------------------------------------------
 
 if(mode === "CLUSTER" && cluster.isPrimary){
-    console.log("CLUSTER mode")
+    logger.info("CLUSTER mode")
     const numCPUS = os.cpus().length // * number of processors
-    console.log(`Numero de procesadores: ${numCPUS}`)
+    logger.info(`Numero de procesadores: ${numCPUS}`)
 
     for(let i=0;i<numCPUS;i++){
         cluster.fork() // * subprocess
-        console.log("cluster created")
+        logger.info("cluster created")
     }
 
     cluster.on("exit", (worker)=>{
-        console.log(`El subproceso ${worker.process.pid} falló`)
+        logArchivoError.error(`El subproceso ${worker.process.pid} falló`)
         cluster.fork()
     })
 }
 else {
-    console.log("FORK mode")
+    logger.info("FORK mode")
     // * We use the port that the enviroment provide or the 8080
     const PORT = process.argv[2] || 8080
-    const server = app.listen(PORT, ()=>{console.log(`Server listening in ${PORT} on process ${process.pid}`)})
+    const server = app.listen(PORT, ()=>{logger.info(`Server listening in ${PORT} on process ${process.pid}`)})
 
     // * Connecting Web Socket with server
     const io = new Server(server)
@@ -79,7 +84,7 @@ else {
 
     io.on("connection",async(socket)=>{
         // * Connected
-        console.log(`El usuario con el id ${socket.id} se ha conectado`)
+        logger.info(`El usuario con el id ${socket.id} se ha conectado`)
 
         // * Sending the info to the new user
         io.sockets.emit('products', await container.getAll());
@@ -127,7 +132,7 @@ else {
         let normalizadoTamaño = JSON.stringify(messagesNormalized).length
         let porcentajeCompresion = (1 -(normalizadoTamaño / sinNormalizarTamaño))*100
         // porcentajeCompresion = (1 -(normalizadoTamaño / sinNormalizarTamaño))*100
-        console.log(porcentajeCompresion)
+        logger.info(porcentajeCompresion)
         io.sockets.emit("compressPercent", porcentajeCompresion)
         return messagesNormalized;
     }
@@ -172,8 +177,8 @@ mongoose.connect(mongoUrl, {
     useNewUrlParser: true,
     useUnifiedTopology:true
 }, (err)=>{
-    if(err) return console.log(`hubo un error: ${err}`);
-    console.log('conexion a base de datos exitosa');
+    if(err) return logArchivoError.error(`hubo un error: ${err}`);
+    logger.info('conexion a base de datos exitosa');
 })
 
 // * Passport
@@ -189,6 +194,7 @@ passport.serializeUser((user,done)=>{
 passport.deserializeUser((id, done)=>{
     UserModel.findById(id,(error, userFound)=>{
         if(error) return done(error)
+        logArchivoError.error(error)
         return done(null,userFound)
     })
 })
@@ -209,18 +215,20 @@ passport.use('signupStrategy', new LocalStrategy({
     usernameField: "email",
 },
     (req,username,password,done)=>{
-        console.log(username);
+        logger.info(username);
         UserModel.findOne({username:username}, (error,userFound)=>{
             if (error) return done(error,null,{message:'hubo un error'})
+            logArchivoError.error(error)
             if(userFound) return done(null,null,{message:'el usuario existe'}) 
             const newUser = {
                 name: req.body.name,
                 username:username,
                 password:createHash(password)
             }
-            console.log(newUser);
+            logger.info(newUser);
             UserModel.create(newUser, (error,userCreated)=>{
                 if(error) return done(error,null, {message:'error al registrar'})
+                logArchivoError.error(error)
                 return done(null, userCreated,{message:'usuario creado'})
             })
         })
@@ -230,14 +238,14 @@ passport.use('signupStrategy', new LocalStrategy({
 // * Passport Strategy Login
 passport.use('loginStrategy', new LocalStrategy(
     (username, password, done) => {
-        console.log(username);
+        logger.info(username);
         UserModel.findOne({ username: username }, (err, user)=> {
-            console.log(user);
+            logger.info(user);
             if (err) return done(err);
             if (!user) return done(null, false);
             if (!user.password) return done(null, false);
             if (!isValidPassword(user,password)){
-                console.log('existen datos')
+                logger.info('existen datos')
                 return done(null,false,{message:'Contraseña inválida'})
             }
             return done(null, user);
@@ -252,6 +260,11 @@ passport.use('loginStrategy', new LocalStrategy(
 // * Main route
 app.use("/api/products", router)
 app.use("/api/info", routerInfo)
+
+app.get('/*', async(req,res)=>{
+    logArchivoWarn.warn('No se encontró la ruta')
+    res.status(404).send('<h1>404! Page not found</h1>');
+})
 
 app.get('/', async(req,res)=>{
     res.render("home",{products: await container.getAll()})
@@ -282,7 +295,7 @@ app.get("/products", async(req,res)=>{
 
 app.get('/registro', async(req,res)=>{
     const errorMessage = req.session.messages ? req.session.messages[0] : '';
-    console.log(req.session);
+    logger.info(req.session);
     res.render('signup',{error:errorMessage})
     req.session.messages = []
 })
@@ -353,7 +366,7 @@ const normalizarMensajes = async()=>{
     let normalizadoTamaño = JSON.stringify(messagesNormalized).length
     let porcentajeCompresion = (1 -(normalizadoTamaño / sinNormalizarTamaño))*100
     // porcentajeCompresion = (1 -(normalizadoTamaño / sinNormalizarTamaño))*100
-    console.log(porcentajeCompresion)
+    logger.info(porcentajeCompresion)
     io.sockets.emit("compressPercent", porcentajeCompresion)
     return messagesNormalized;
 }
