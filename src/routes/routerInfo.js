@@ -2,6 +2,8 @@ import express, { application } from 'express'
 import {fork} from 'child_process'
 import os from "os"
 
+import compression from 'compression'
+
 const routerInfo = express.Router()
 
 routerInfo.get('/',(req,res)=>{
@@ -24,7 +26,21 @@ routerInfo.get('/randoms',(req,res)=>{
     let obj = {};
     cantidad
             ? child.send({ cantidad, obj })
-            : child.send({ cantidad: 500000000, obj });
+            // : child.send({ cantidad: 500000000, obj });
+            : child.send({ cantidad: 50000, obj });
+            child.on('message', msg => res.json(msg))
+    
+})
+
+routerInfo.get('/randomsZip', compression(), (req,res)=>{
+
+    const child = fork("src/child/child.js");
+    const {cantidad} = req.query
+    
+    let obj = {};
+    cantidad
+            ? child.send({ cantidad, obj })
+            : child.send({ cantidad: 50000, obj });
             child.on('message', msg => res.json(msg))
     
 })

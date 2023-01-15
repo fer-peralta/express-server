@@ -16,7 +16,6 @@
     "pm2-cluster": "pm2 start src/index.js -i 0",
     "ngix-cluster": "node src/server.js -p 8081 -m CLUSTER",
     "ngix-fork": "node src/server.js -p 8080"
-
   },
   "repository": {
     "type": "git",
@@ -32,6 +31,7 @@
     "@faker-js/faker": "^7.6.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "bcrypt": "^5.1.0",
+    "compression": "^1.7.4",
     "connect-mongo": "^4.6.0",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.3",
