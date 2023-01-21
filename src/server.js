@@ -72,7 +72,7 @@ if(mode === "CLUSTER" && cluster.isPrimary){
         cluster.fork()
     })
 }
-else {
+else {  
     logger.info("FORK mode")
     // * We use the port that the enviroment provide or the 8080
     // const PORT = process.argv[2] || 8080
@@ -280,20 +280,20 @@ app.get("/products", async(req,res)=>{
     res.render("partials/products",{products: await container.getAll()})
 })
 
-// app.get("/products-test", (req,res)=>{
-//     let test = []
-//     for(let i= 0; i<5; i++){
-//         test.push(
-//             {
-//                 id : datatype.uuid(),
-//                 name : commerce.product(),
-//                 price : commerce.price(),
-//                 url : `${datatype.uuid()}.jpg`           
-//             }
-//         )
-//     }
-//     res.render("products-test",{products: test})
-// })
+app.get("/products-test", (req,res)=>{
+    let test = []
+    for(let i= 0; i<5; i++){
+        test.push(
+            {
+                id : datatype.uuid(),
+                name : commerce.product(),
+                price : commerce.price(),
+                url : `${datatype.uuid()}.jpg`           
+            }
+        )
+    }
+    res.render("products-test",{products: test})
+})
 
 app.get('/registro', async(req,res)=>{
     const errorMessage = req.session.messages ? req.session.messages[0] : '';
