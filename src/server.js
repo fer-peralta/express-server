@@ -265,11 +265,6 @@ passport.use('loginStrategy', new LocalStrategy(
 app.use("/api/products", router)
 app.use("/api/info", routerInfo)
 
-app.get('/*', async(req,res)=>{
-    logArchivoWarn.warn('No se encontró la ruta')
-    res.status(404).send('<h1>404! Page not found</h1>');
-})
-
 app.get('/', async(req,res)=>{
     res.render("home",{products: await container.getAll()})
 })
@@ -337,6 +332,11 @@ app.get('/logout',(req,res)=>{
     setTimeout(()=>{
             res.redirect('./inicio-sesion')
     },3000)
+})
+
+app.get('/*', async(req,res)=>{
+    logArchivoWarn.warn('No se encontró la ruta')
+    res.status(404).send('<h1>404! Page not found</h1>');
 })
 
 // * Public route
