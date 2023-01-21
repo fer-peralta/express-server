@@ -62,11 +62,13 @@ if(mode === "CLUSTER" && cluster.isPrimary){
     logger.info(`Numero de procesadores: ${numCPUS}`)
     logger.info(`PID MASTER ${process.pid}`)
 
+    // * Creating process
     for(let i=0;i<numCPUS;i++){
         cluster.fork() // * subprocess
         logger.info("cluster created")
     }
 
+    // * Creating a process by error
     cluster.on("exit", (worker)=>{
         logArchivoError.error(`El subproceso ${worker.process.pid} falló ${new Date().toLocaleString()}`)
         cluster.fork()
@@ -76,7 +78,7 @@ else {
     logger.info("FORK mode")
     // * We use the port that the enviroment provide or the 8080
     // const PORT = process.argv[2] || 8080
-    const PORT = process.env.PORT || 8080
+    const PORT = process.argv[2] || 8080
     const server = app.listen(PORT, ()=>{logger.info(`Server listening in ${PORT} on process ${process.pid}`)})
 
     // * Connecting Web Socket with server
