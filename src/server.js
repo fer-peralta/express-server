@@ -78,7 +78,7 @@ else {
     logger.info("FORK mode")
     // * We use the port that the enviroment provide or the 8080
     // const PORT = process.argv[2] || 8080
-    const PORT = process.argv[2] || 8080
+    const PORT = process.env.PORT || 8080
     const server = app.listen(PORT, ()=>{logger.info(`Server listening in ${PORT} on process ${process.pid}`)})
 
     // * Connecting Web Socket with server
