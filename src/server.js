@@ -32,7 +32,6 @@ import { logger } from "./logger.js"
 import { logArchivoWarn } from "./logger.js"
 import { logArchivoError } from "./logger.js"
 
-
 // ? ---------------------------------
 
 import {ContenedorChat} from './managers/ContenedorChat.js'
@@ -55,6 +54,7 @@ const objArguments = parseArgs(process.argv.slice(2), argOptions)
 const mode = objArguments.mode
 
 // ? --------------------------------------------------------
+// * Mode (CLUSTER OR FORK)
 
 if(mode === "CLUSTER" && cluster.isPrimary){
     logger.info("CLUSTER mode")
@@ -76,6 +76,38 @@ if(mode === "CLUSTER" && cluster.isPrimary){
 }
 else {  
     logger.info("FORK mode")
+
+    const authorSchema = new schema.Entity("authors", {}, {idAttribute: "email"})
+
+    // * message schema
+    const messageSchema = new schema.Entity("messages", {author:authorSchema})
+
+    // * chat schema, global schema
+
+    const chatSchema = new schema.Entity("chat", {
+        messages:[messageSchema]
+        }, 
+        {idAttribute:"id"}
+    )
+
+    // * Normalize data
+    const normalizarData = (data)=>{
+        const normalizeData = normalize({id:"chatHistory", messages:data}, chatSchema);
+        return normalizeData;
+    };
+
+    const normalizarMensajes = async()=>{
+        const results = await chatApi.getAll();
+        let sinNormalizarTamaño = JSON.stringify(results).length
+        const messagesNormalized = normalizarData(results);
+        let normalizadoTamaño = JSON.stringify(messagesNormalized).length
+        let porcentajeCompresion = (1 -(normalizadoTamaño / sinNormalizarTamaño))*100
+        // porcentajeCompresion = (1 -(normalizadoTamaño / sinNormalizarTamaño))*100
+        logger.info(porcentajeCompresion)
+        io.sockets.emit("compressPercent", porcentajeCompresion)
+        return messagesNormalized;
+    }
+
     // * We use the port that the enviroment provide or the 8080
     // const PORT = process.argv[2] || 8080
     const PORT = process.env.PORT || 8080
@@ -110,44 +142,13 @@ else {
         })
     })
 
-    const authorSchema = new schema.Entity("authors", {}, {idAttribute: "email"})
-
-    // * message schema
-    const messageSchema = new schema.Entity("messages", {author:authorSchema})
-
-    // * chat schema, global schema
-
-    const chatSchema = new schema.Entity("chat", {
-        messages:[messageSchema]
-        }, 
-        {idAttribute:"id"}
-    )
-
-    // * Normalize data
-    const normalizarData = (data)=>{
-        const normalizeData = normalize({id:"chatHistory", messages:data}, chatSchema);
-        return normalizeData;
-    };
-
-    const normalizarMensajes = async()=>{
-        const results = await chatApi.getAll();
-        let sinNormalizarTamaño = JSON.stringify(results).length
-        const messagesNormalized = normalizarData(results);
-        let normalizadoTamaño = JSON.stringify(messagesNormalized).length
-        let porcentajeCompresion = (1 -(normalizadoTamaño / sinNormalizarTamaño))*100
-        // porcentajeCompresion = (1 -(normalizadoTamaño / sinNormalizarTamaño))*100
-        logger.info(porcentajeCompresion)
-        io.sockets.emit("compressPercent", porcentajeCompresion)
-        return messagesNormalized;
-    }
 }
 
+// ? --------------------------------------------------------
 
 // * Read in JSON
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
-
-
 
 // * HandleBars & views
 app.engine("handlebars", handlebars.engine())
@@ -156,7 +157,7 @@ app.set("view engine", "handlebars")
 
 // ? ---------------------------------------------------------
 
-// * Cookies, session
+// * Cookies, session in Mongo
 
 app.use(cookieParser())
 
@@ -174,7 +175,7 @@ app.use(session({
 
 // ? --------------------------------------------------------
 
-// * Authentication DB
+// * Authentication in DB
 const mongoUrl = config.MONGO_AUTENTICATION
 
 mongoose.connect(mongoUrl, {
@@ -184,6 +185,8 @@ mongoose.connect(mongoUrl, {
     if(err) return logArchivoError.error(`hubo un error: ${err}`);
     logger.info('conexion a base de datos exitosa');
 })
+
+// ? --------------------------------------------------------
 
 // * Passport
 
@@ -259,8 +262,7 @@ passport.use('loginStrategy', new LocalStrategy(
 
 // ? ------------------------------------------------------
 
-
-
+// * Routes
 // * Main route
 app.use("/api/products", router)
 app.use("/api/info", routerInfo)
@@ -334,6 +336,7 @@ app.get('/logout',(req,res)=>{
     },3000)
 })
 
+// * 404
 app.get('/*', async(req,res)=>{
     logArchivoWarn.warn('No se encontró la ruta')
     res.status(404).send('<h1>404! Page not found</h1>');
@@ -341,6 +344,8 @@ app.get('/*', async(req,res)=>{
 
 // * Public route
 app.use(express.static(__dirname+"/public"))
+
+// ? ------------------------------------------------------
 
 // * Schemas normalizr
 // * author schema
@@ -377,10 +382,3 @@ const normalizarMensajes = async()=>{
 
 // ? ---------------------------------------------------------------
 // ? ---------------------------------------------------------------
-
-
-
-
-
-
-
