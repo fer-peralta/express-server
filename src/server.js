@@ -71,7 +71,7 @@ if(mode === "CLUSTER" && cluster.isPrimary){
 else {
     logger.info("FORK mode")
     // * We use the port that the enviroment provide or the 8080
-    const PORT = process.argv[2] || 8080
+    const PORT = process.env.PORT || 8080
     const server = app.listen(PORT, ()=>{logger.info(`Server listening in ${PORT} on process ${process.pid}`)})
 
     // * Connecting Web Socket with server
@@ -327,6 +327,11 @@ app.get('/logout',(req,res)=>{
 // * Public route
 app.use(express.static(__dirname+"/public"))
 
+// * 404
+app.get('/*', async(req,res)=>{
+    logArchivoWarn.warn('No se encontró la ruta')
+    res.status(404).send('<h1>404! Page not found</h1>');
+})
 
 // ? ------------------------------------------------------
 // ? ---------------------------------------------------------------
