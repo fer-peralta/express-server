@@ -1,6 +1,8 @@
 import {options} from "../config/dbConfig.js";
 import mongoose from 'mongoose';
 
+import { logger } from "../loggers/loggers.js";
+
 let ContenedorDaoProductos;
 let ContenedorDaoCarritos;
 
@@ -27,8 +29,13 @@ switch(databaseType){
             useNewUrlParser: true,
             useUnifiedTopology: true
         }, error =>{
-            if(error) throw new Error(`conexion fallida ${error}`)
-            console.log('conexion exitosa');
+            if(error) {
+                // throw new Error(`conexion fallida ${error}`)
+                logger.fatal("No se pudo conectar a la base de datos")
+            }
+            else {
+                logger.info('conexion exitosa')
+            }
         })
 
         const {ProductosDaosMongo} = await import('./products/productsMongo.js')

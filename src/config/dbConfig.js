@@ -19,5 +19,8 @@ export const options = {
     firebase:{
         serviceKey:{},
         databaseUrl:""
+    },
+    MongoDB:{
+        url:"mongodb+srv://ferguitarra1490:Guitarra,1490@ecommerce.vi3tez0.mongodb.net/?retryWrites=true&w=majority"
     }
 }
