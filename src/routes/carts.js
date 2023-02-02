@@ -1,12 +1,13 @@
 import express from "express";
 import {ContenedorDaoProductos, ContenedorDaoCarritos} from "../daos/index.js"
+import { checkLogin } from "../middlewares/checkLogin.js"
 
 const cartsRouter = express.Router()
 
 const productosApi = ContenedorDaoProductos
 const carritosApi = ContenedorDaoCarritos
 
-cartsRouter.get('/', async (req, res) => {
+cartsRouter.get('/', checkLogin, async (req, res) => {
     const response = await carritosApi.getAll();
     res.json(response);
 })

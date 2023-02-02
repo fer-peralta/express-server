@@ -1,15 +1,13 @@
 import express from "express";
-import { cartsRouter } from "./routes/carritos.js";
+import { cartsRouter } from "./routes/carts.js";
 import { productsRouter } from "./routes/products.js";
+import { authRouter } from "./routes/auth.js";
+
 
 import {logger} from "./loggers/loggers.js"
-
 import session from "express-session";
-
 import MongoStore from "connect-mongo";
-
 import {options} from "./config/dbConfig.js"
-
 import passport from "passport";
 
 // * Importing express and the routes of the app
@@ -35,23 +33,21 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 // * Routes
-app.use('/api/productos', productsRouter);
-app.use('/api/carritos', cartsRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/products', productsRouter);
+app.use('/api/carts', cartsRouter);
 
-app.get('/', async(req,res)=>{
-    res.render("home",{products: await productosApi.getAll()})
-})
+// app.get('/', async(req,res)=>{
+//     res.render("home",{products: await productosApi.getAll()})
+// })
 
-app.get("/chat", async(req,res)=>{
-    res.render("chat",{messages: await chatApi.getAll()})
-})
+// app.get("/chat", async(req,res)=>{
+//     res.render("chat",{messages: await chatApi.getAll()})
+// })
 
-app.get("/products", async(req,res)=>{
-    res.render("chat",{products: await productosApi.getAll()})
-})
-
-// * Public route
-app.use('/static', express.static('public'))
+// app.get("/products", async(req,res)=>{
+//     res.render("chat",{products: await productosApi.getAll()})
+// })
 
 // * PORT and listen server
 const PORT = 8080;

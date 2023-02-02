@@ -1,6 +1,7 @@
 import express from "express"
 import { checkAdminRole } from "../middlewares/checkRole.js"
 import {ContenedorDaoProductos} from "../daos/index.js"
+import { checkLogin } from "../middlewares/checkLogin.js"
 
 const productosApi = ContenedorDaoProductos
 
@@ -11,7 +12,7 @@ productsRouter.get('/', async (req, res) => {
     res.json(response)
 })
 
-productsRouter.get('/:id', async (req, res) => {
+productsRouter.get('/:id', checkLogin, async (req, res) => {
     const productId = parseInt(req.params.id);
     const response = await productosApi.getById(productId);
     res.json(response);

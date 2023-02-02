@@ -23,30 +23,27 @@ switch(databaseType){
         ContenedorDaoCarritos = new CarritosDaoSQL(options.sqliteDB,"carritos");
         break;
     case "mongo":
-        const URL = "mongodb+srv://ferguitarra1490:Guitarra,1490@ecommerce.vi3tez0.mongodb.net/?retryWrites=true&w=majority"
+        const URL = "mongodb+srv://ferguitarra1490:Guitarra,1490@ecommerce.vi3tez0.mongodb.net/newServer?retryWrites=true&w=majority"
         
         mongoose.connect(URL, {
             useNewUrlParser: true,
             useUnifiedTopology: true
         }, error =>{
-            if(error) {
-                // throw new Error(`conexion fallida ${error}`)
-                logger.fatal("No se pudo conectar a la base de datos")
+            if(error){
+                logger.fatal(error)
             }
-            else {
-                logger.info('conexion exitosa')
-            }
+            logger.info('conexion exitosa');
         })
 
         const {ProductosDaosMongo} = await import('./products/productsMongo.js')
-        const {productosSchema} = await import('../models/mongoAtlas.js')
-        const {productosCollection} = await import('../models/mongoAtlas.js')
-        ContenedorDaoProductos = new ProductosDaosMongo(productosCollection,productosSchema)
+        const {productsSchema} = await import('../models/products.models.js')
+        const {productsCollection} = await import('../models/products.models.js')
+        ContenedorDaoProductos = new ProductosDaosMongo(productsCollection,productsSchema)
 
         const {CarritoDaosMongo} = await import('./carts/cartsMongo.js')
-        const {carritosSchema} = await import('../models/mongoAtlas.js')
-        const {carritosCollection} = await import('../models/mongoAtlas.js')
-        ContenedorDaoCarritos = new CarritoDaosMongo(carritosCollection,carritosSchema)
+        const {cartsSchema} = await import('../models/carts.models.js')
+        const {cartsCollection} = await import('../models/carts.models.js')
+        ContenedorDaoCarritos = new CarritoDaosMongo(cartsCollection,cartsSchema)
         break;
 }
 

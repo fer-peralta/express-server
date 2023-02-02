@@ -21,6 +21,6 @@ export const options = {
         databaseUrl:""
     },
     MongoDB:{
-        url:"mongodb+srv://ferguitarra1490:Guitarra,1490@ecommerce.vi3tez0.mongodb.net/?retryWrites=true&w=majority"
+        url:"mongodb+srv://ferguitarra1490:Guitarra,1490@ecommerce.vi3tez0.mongodb.net/newServer?retryWrites=true&w=majority"
     }
 }
