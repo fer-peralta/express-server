@@ -1,5 +1,6 @@
 import express from "express";
 import {ContenedorDaoProductos, ContenedorDaoCarritos} from "../daos/index.js"
+import { logger } from "../loggers/loggers.js";
 import { checkLogin } from "../middlewares/checkLogin.js"
 
 const cartsRouter = express.Router()
@@ -9,39 +10,41 @@ const carritosApi = ContenedorDaoCarritos
 
 cartsRouter.get('/', checkLogin, async (req, res) => {
     const response = await carritosApi.getAll();
-    res.json(response);
+    res.status(200).json(response);
 })
 
-cartsRouter.post('/', async (req, res) => {
+cartsRouter.post('/', checkLogin, async (req, res) => {
     const response = await carritosApi.save({ products: [], timestamp: new Date().toLocaleDateString() });
-    res.json(response);
+    logger.info("Se ha creado un carrito de compras")
+    res.status(200).json(response);
 })
 
-cartsRouter.delete('/:id', async (req, res) => {
-    const cartId = parseInt(req.params.id);
-    res.json(await carritosApi.deleteById(cartId));
+cartsRouter.delete('/:id', checkLogin, async (req, res) => {
+    const cartId = req.params.id
+    logger.info("Se ha borrado un carrito de compras")
+    res.status(200).json({response: await carritosApi.deleteById(cartId), message: "Se ha borrado el carrito de compras seleccionado"});
 })
 
-cartsRouter.get('/:id/productos', async (req, res) => {
-    const cartId = parseInt(req.params.id);
+cartsRouter.get('/:id/products', checkLogin, async (req, res) => {
+    const cartId = req.params.id
     const carritoResponse = await carritosApi.getById(cartId);
     if(carritoResponse.error){
         res.json(carritoResponse);
     } else{
         const getData = async()=>{
-            const products = await Promise.all(carritoResponse.message.products.map(async(element) => {
+            const products = await Promise.all(carritoResponse.products.map(async(element) => {
                 const productResponse = await productosApi.getById(element);
-                return productResponse.message
+                return productResponse
             }));
-            res.json({products: products});
+            res.status(200).json({cart: cartId,products: products});
         }
         getData();
     }
 })
 
-cartsRouter.post('/:id/productos', async (req, res) => {
-    const cartId = parseInt(req.params.id);
-    const productId = parseInt(req.body.id);
+cartsRouter.post('/:id/products/:productid', checkLogin, async (req, res) => {
+    const cartId = req.params.id
+    const productId = req.params.productid
     const carritoResponse = await carritosApi.getById(cartId);
     if(carritoResponse.error){
         res.json({message:`El carrito con id: ${cartId} no fue encontrado`});
@@ -50,27 +53,26 @@ cartsRouter.post('/:id/productos', async (req, res) => {
         if(productoResponse.error){
             res.json(productoResponse);
         } else{
-            carritoResponse.message.products.push(productoResponse.message.id);
-            const response = await carritosApi.updateById(carritoResponse.message, cartId);
-            res.json({message:"product added"});
+            carritoResponse.products.push(productoResponse);
+            const response = await carritosApi.putById(cartId, carritoResponse);
+            res.status(200).json({product:productoResponse, cart: cartId, message:"Se agregó el producto seleccionado en el carrito de compras seleccionado"});
         }
     }
 })
 
-cartsRouter.delete('/:id/productos/:idProd', async (req, res) => {
-    const cartId = parseInt(req.params.id);
-    const productId = parseInt(req.params.idProd);
+cartsRouter.delete('/:id/products/:productid', checkLogin, async (req, res) => {
+    const cartId = req.params.id
+    const productId = req.params.productid
+    
     const carritoResponse = await carritosApi.getById(cartId);
     if(carritoResponse.error){
         res.json({message:`El carrito con id: ${cartId} no fue encontrado`});
     } else{
-        const index = carritoResponse.message.products.findIndex(p => p === productId);
-        if (index !== -1) {
-            carritoResponse.message.products.splice(index, 1);
-            await carritosApi.updateById(carritoResponse.message, cartId);
-            res.json({message:"product deleted"});
+        const productToDelete = await carritosApi.deleteOneProd(cartId, productId);
+        if (productToDelete) {
+            res.status(200).json({message:"product deleted"});
         } else{
-            res.json({message:`El producto no se encontro en el carrito: ${productId}`});
+            res.status(200).json({message:`El producto ${productId} no se encontro en el carrito ${cartId}`});
         }
     }
 })
