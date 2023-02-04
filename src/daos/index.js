@@ -32,9 +32,9 @@ switch(databaseType){
             useUnifiedTopology: true
         }, error =>{
             if(error){
-                logger.fatal(error)
+                logger.fatal(`Hubo un error al conectarse a MongoDB: ${error}`)
             }
-            logger.info('conexion exitosa');
+            logger.info('conexion a MongoDB exitosa');
         })
 
         const {ProductosDaosMongo} = await import('./products/productsMongo.js')
