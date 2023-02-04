@@ -9,7 +9,8 @@ const userSchema = new mongoose.Schema({
     adress:{type:String},
     age:{type:Number, required:true},
     telephone:{type:String, required:true},
-    avatar:{type:String, required:true}
+    avatar:{type:String, required:true},
+    cart:{type:Object}
 })
 
 export const UserModel = mongoose.model(userCollection,userSchema)

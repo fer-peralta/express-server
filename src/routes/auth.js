@@ -47,7 +47,7 @@ passport.use("signUpStrategy", new LocalStrategy(
                 telephone:req.body.telephone,
                 address:req.body.adress,
                 age:req.body.age,
-                avatar:req.body.avatar,
+                avatar:req.body.avatar
             }
             UserModel.create(newUser,(error,userCreated)=>{
                 if(error) return done(null,null,{message:`Hubo un error al registrar al usuario: ${error}`})
@@ -120,12 +120,7 @@ authRouter.post("/login",(req,res,next)=>{
 authRouter.get("/profile",checkLogin,(req,res)=>{
     res.status(200).json(
     {   message: "Datos del usuario",
-        username: req.body.username,
-        name: req.body.name,
-        address: req.body.address,
-        age: req.body.age,
-        telephone: req.body.telephone,
-        avatar: req.body.avatar
+        Usuario: req.user
     })
 })
 

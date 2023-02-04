@@ -4,6 +4,7 @@ import { logger } from "../loggers/loggers.js";
 import { checkLogin } from "../middlewares/checkLogin.js"
 import { transporterEmail, emailAdmin } from "../messages/email.js"
 import {twilioClient, adminPhone, twilioWhatsapp, adminWhatsapp} from "../messages/sms.js"
+import {UserModel} from "../models/user.models.js"
 
 
 const cartsRouter = express.Router()
@@ -12,14 +13,21 @@ const productosApi = ContenedorDaoProductos
 const carritosApi = ContenedorDaoCarritos
 
 cartsRouter.get('/', checkLogin, async (req, res) => {
+    logger.info(req)
     const response = await carritosApi.getAll();
     res.status(200).json(response);
 })
 
 cartsRouter.post('/', checkLogin, async (req, res) => {
     const response = await carritosApi.save({ products: [], timestamp: new Date().toLocaleDateString() });
-    logger.info("Se ha creado un carrito de compras")
-    res.status(200).json(response);
+    const userId = req.user.id
+    req.user.cart = response
+    const update = {cart: response}
+    const opts = { new: true }
+    logger.info(update, userId)
+    const userUpdate = await UserModel.findOneAndUpdate( {_id: userId}, {$set: update}, opts)
+    logger.info(`Se ha creado un carrito de compras al usuario ${userId}`)
+    res.status(200).json({cart:response, message: `Se ha añadido el carrito de compras al usuario ${userId}`});
 })
 
 cartsRouter.delete('/:id', checkLogin, async (req, res) => {
@@ -48,7 +56,10 @@ cartsRouter.get('/:id/products', checkLogin, async (req, res) => {
 cartsRouter.post('/:id/products/:productid', checkLogin, async (req, res) => {
     const cartId = req.params.id
     const productId = req.params.productid
+    const userId = req.user.id
+    const opts = { new: true }
     const carritoResponse = await carritosApi.getById(cartId);
+    const update = {cart: carritoResponse}
     if(carritoResponse.error){
         res.json({message:`El carrito con id: ${cartId} no fue encontrado`});
     } else{
@@ -58,7 +69,8 @@ cartsRouter.post('/:id/products/:productid', checkLogin, async (req, res) => {
         } else{
             carritoResponse.products.push(productoResponse);
             const response = await carritosApi.putById(cartId, carritoResponse);
-            res.status(200).json({product:productoResponse, cart: cartId, message:"Se agregó el producto seleccionado en el carrito de compras seleccionado"});
+            const userUpdate = await UserModel.findOneAndUpdate( {_id: userId}, {$set: update}, opts)
+            res.status(200).json({product:productoResponse, cart: cartId, message:`Se agregó el producto ${productId} en el carrito de compras ${cartId}, correspondiente al usuario ${userId}`});
         }
     }
 })
@@ -77,6 +89,7 @@ cartsRouter.delete('/:id/products/:productid', checkLogin, async (req, res) => {
 
 cartsRouter.post("/checkout",checkLogin,async (req,res)=>{
     // * To the server
+    const userOrder = req.user.cart
     twilioClient.messages.create({
         body:`Nuevo pedido de ${req.user.name, req.user.username}`,
         from:`whatsapp:${twilioWhatsapp}`,
@@ -93,7 +106,7 @@ cartsRouter.post("/checkout",checkLogin,async (req,res)=>{
         from:"Server node",
         to:emailAdmin,
         subject:`Nuevo pedido de ${req.user.name, req.user.username}`,
-        text:``
+        text:`${JSON.stringify(userOrder)}`
         },(error)=>{
             if(error) {
                 logger.error(`Hubo un error al enviar el mensaje al admin: ${error}`)

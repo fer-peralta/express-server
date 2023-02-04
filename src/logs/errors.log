@@ -81,3 +81,14 @@
 [2023-02-04T11:30:14.920] [FATAL] default - Error in server Error: bind EADDRINUSE null:8080
 [2023-02-04T11:30:14.943] [FATAL] default - Error in server Error: bind EADDRINUSE null:8080
 [2023-02-04T11:30:14.951] [FATAL] default - Error in server Error: bind EADDRINUSE null:8080
+[2023-02-04T12:07:13.110] [ERROR] default - MongoServerError: Plan executor error during findAndModify :: caused by :: Performing an update on the path '_id' would modify the immutable field '_id'
+[2023-02-04T12:08:55.891] [ERROR] default - CastError: Cast to string failed for value "{
+  products: [],
+  _id: new ObjectId("63de7507679e46cd18782cd8"),
+  createdAt: 2023-02-04T15:08:55.835Z,
+  updatedAt: 2023-02-04T15:08:55.835Z,
+  __v: 0
+}" (type Object) at path "cart"
+[2023-02-04T13:31:28.064] [ERROR] default - Hubo un error al enviar el mensaje al cliente: Error: Authenticate
+[2023-02-04T13:31:28.067] [ERROR] default - Hubo un error al enviar el whatsapp al admin: Error: Authenticate
+[2023-02-04T13:34:16.846] [ERROR] default - Hubo un error al enviar el mensaje al cliente: Error: The 'To' number +54112253122 is not a valid phone number.
