@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 
 import { logger } from "../loggers/loggers.js";
 
+import {config} from "../config/config.js"
+
 let ContenedorDaoProductos;
 let ContenedorDaoCarritos;
 
@@ -23,7 +25,7 @@ switch(databaseType){
         ContenedorDaoCarritos = new CarritosDaoSQL(options.sqliteDB,"carritos");
         break;
     case "mongo":
-        const URL = "mongodb+srv://ferguitarra1490:Guitarra,1490@ecommerce.vi3tez0.mongodb.net/newServer?retryWrites=true&w=majority"
+        const URL = config.MONGO_DB
         
         mongoose.connect(URL, {
             useNewUrlParser: true,

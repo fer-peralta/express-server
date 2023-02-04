@@ -1,9 +1,10 @@
 import twilio from "twilio"
+import {config} from "../config/config.js"
 
-const accountID = "ACba89d10d0058690612ad2727842be9a7"
-const authToken = "276b27586e37a825a3f6187f14e46842"
-export const adminPhone = "+13135461278"
-export const twilioWhatsapp = "+14155238886"
-export const adminWhatsapp = "+5491122854280"
+const accountID = config.TWILIO_ACCOUNT_ID
+const authToken = config.TWILIO_AUTH_TOKEN
+export const adminPhone = config.TWILIO_ADMIN_PHONE
+export const twilioWhatsapp = config.TWILIO_WHATSAPP_PHONE
+export const adminWhatsapp = config.ADMIN_WHATSAPP_PHONE
 
 export const twilioClient = twilio(accountID,authToken)

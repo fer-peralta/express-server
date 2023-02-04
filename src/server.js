@@ -50,7 +50,7 @@ app.use('/api/carts', cartsRouter);
 // })
 
 // * PORT and listen server
-const PORT = 8080;
+const PORT = process.pid.PORT || 8080;
 const server = app.listen(PORT, () => {
     logger.info(`Server listening on port ${PORT}`);
 })

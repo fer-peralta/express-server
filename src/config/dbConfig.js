@@ -1,5 +1,6 @@
 import path from "path";
 import {fileURLToPath} from 'url';
+import {config} from "./config.js"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,6 +22,6 @@ export const options = {
         databaseUrl:""
     },
     MongoDB:{
-        url:"mongodb+srv://ferguitarra1490:Guitarra,1490@ecommerce.vi3tez0.mongodb.net/newServer?retryWrites=true&w=majority"
+        url: config.MONGO_DB
     }
 }
