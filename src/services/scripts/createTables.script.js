@@ -1,4 +1,4 @@
-const options = require ("../config/dbConfig")
+const options = require ("../../config/dbConfig.js")
 const knex = require("knex")
 
 const database = knex(options.mariaDB)

@@ -11,3 +11,4 @@ export const random = (cantidad, obj) =>{
     return obj
         
 }
+

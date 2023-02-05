@@ -1,4 +1,4 @@
-import { random } from "./random.js";
+import {random} from "./info.random.service.js"
 
 process.on("message",(msj)=>{
     const {cantidad, obj}= msj

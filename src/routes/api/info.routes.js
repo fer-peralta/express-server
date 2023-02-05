@@ -5,9 +5,9 @@ import os from "os"
 import compression from 'compression'
 
 const router = express.Router()
+const childUrl = "src/services/info.child.service.js"
 
 router.get('/',(req,res)=>{
-    
     res.json({Version_de_Node_JS : process.version,
     Nombre_de_la_plataforma: process.platform,
     Path_de_ejecución : process.execPath,
@@ -20,28 +20,28 @@ router.get('/',(req,res)=>{
 
 router.get('/randoms',(req,res)=>{
 
-    const child = fork("src/child/child.js");
+    const childRandom = fork(childUrl);
     const {cantidad} = req.query
     
     let obj = {};
     cantidad
-            ? child.send({ cantidad, obj })
+            ? childRandom.send({ cantidad, obj })
             // : child.send({ cantidad: 500000000, obj });
-            : child.send({ cantidad: 50000, obj });
-            child.on('message', msg => res.json(msg))
+            : childRandom.send({ cantidad: 50000, obj });
+            childRandom.on('message', msg => res.json(msg))
     
 })
 
 router.get('/randomsZip', compression(), (req,res)=>{
 
-    const child = fork("src/child/child.js");
+    const childRandomZip = fork(childUrl);
     const {cantidad} = req.query
     
     let obj = {};
     cantidad
-            ? child.send({ cantidad, obj })
-            : child.send({ cantidad: 50000, obj });
-            child.on('message', msg => res.json(msg))
+            ? childRandomZip.send({ cantidad, obj })
+            : childRandomZip.send({ cantidad: 50000, obj });
+            childRandomZip.on('message', msg => res.json(msg))
     
 })
 

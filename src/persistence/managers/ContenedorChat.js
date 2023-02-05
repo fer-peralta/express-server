@@ -58,7 +58,7 @@ class ContenedorChat{
                 return [];
             }
         } catch (error) {
-            return "El archivo no existe"
+            return `Hubo un error: ${error}`
         }
     }
 }

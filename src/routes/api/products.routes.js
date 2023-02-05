@@ -1,5 +1,6 @@
 import express from 'express'
-import { getProducts } from '../../services/products.service.js';
+import { getProducts, getProductsById, saveProduct } from '../../services/products.service.js';
+import { logger } from '../../logger.js';
 
 const router = express.Router();
 
@@ -15,33 +16,47 @@ router.get('/',async(req,res)=>{
 })
 
 router.get('/:id',async(req,res)=>{
-    const productId = req.params.id;
-    const product = await productosApi.getById(parseInt(productId));
-    if(product){
-        return res.send(product)
-    } else{
-        return res.send({error : 'producto no encontrado'})
+    try{
+        const response = await getProductsById(parseInt(req.params.id))
+        if(response){
+            return res.send(response)
+        } 
+    }
+    catch(error){
+        return res.send(`Hubo un error: ${error}`)
     }
 })
 
 router.post('/',async(req,res)=>{
-    const newProduct = req.body;
-    const result = await productosApi.save(newProduct);
-    res.send(result);
+    try{
+        const newProduct = await saveProduct(req.body);
+        logger.info(`Se ha añadido un nuevo producto a la base de datos`)
+        return res.send(newProduct)
+    }
+    catch(error){
+        return res.send(`Hubo un error: ${error}`)
+    }
 })
 
-router.put('/:id',async(req,res)=>{
-    const cambioObj = req.body;
-    const productId = req.params.id;
-    const result = await productosApi.updateById(parseInt(productId),cambioObj);
-    res.send(result);
-})
+// router.put('/:id',async(req,res)=>{
+//     try{
+//         const result = await productosApi.updateById(parseInt(req.params.id),req.body);
+//         res.send(result);
+//     }
+//     catch(error){
+//         return res.send(`Hubo un error: ${error}`)
+//     }
+// })
 
-router.delete('/:id',async(req,res)=>{
-    const productId = req.params.id;
-    const result = await productosApi.deleteById(parseInt(productId));
-    res.send(result);
-})
+// router.delete('/:id',async(req,res)=>{
+//     try{
+//         const result = await productosApi.deleteById(parseInt(req.params.id));
+//         res.send(result);
+//     }
+//     catch(error){
+//         return res.send(`Hubo un error: ${error}`)
+//     }
+// })
 
 // ? --------------------------------------
 
