@@ -1,17 +1,13 @@
 import express from 'express'
-import {Containersql} from "../../persistence/managers/ContainerSql.js"
-import {options} from "../../config/dbConfig.js"
 import { getProducts } from '../../services/products.service.js';
 
 const router = express.Router();
-
-const productosApi = new Containersql(options.mariaDB, "products");
 
 router.get('/',async(req,res)=>{
     try{
         const response = await getProducts()
         res.render("partials/products",{products: response})
-        res.status(200).send({data: response});
+        // res.status(200).send({data: response});
     }
     catch(error) {
         res.json({message: `Hubo un error ${error}`})

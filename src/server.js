@@ -253,17 +253,17 @@ passport.use('loginStrategy', new LocalStrategy(
 // * Main route
 app.use("/api", apiRouter)
 
-app.get('/', async(req,res)=>{
-    res.render("home",{products: await container.getAll()})
-})
+// app.get('/', async(req,res)=>{
+//     res.render("home",{products: await container.getAll()})
+// })
 
-app.get("/chat", async(req,res)=>{
-    res.render("partials/chat",{messages: await chatApi.getAll()})
-})
+// app.get("/chat", async(req,res)=>{
+//     res.render("partials/chat",{messages: await chatApi.getAll()})
+// })
 
-app.get("/products", async(req,res)=>{
-    res.render("partials/products",{products: await container.getAll()})
-})
+// app.get("/products", async(req,res)=>{
+//     res.render("partials/products",{products: await container.getAll()})
+// })
 
 // app.get("/products-test", (req,res)=>{
 //     let test = []
@@ -280,13 +280,53 @@ app.get("/products", async(req,res)=>{
 //     res.render("products-test",{products: test})
 // })
 
+// app.get('/registro', async(req,res)=>{
+//     const errorMessage = req.session.messages ? req.session.messages[0] : '';
+//     logArchivoError.error(req.session);
+//     res.render('signup',{error:errorMessage})
+//     req.session.messages = []
+// })
 
+// app.get('/inicio-sesion', (req,res)=>{
+//     res.render('login')
+// })
 
-// * Public route
-app.use(express.static(__dirname+"/public"))
+// app.post('/signup',passport.authenticate('signupStrategy',{
+//     failureRedirect:'./registro',
+//     failureMessage:true
+// }),(req,res)=>{
+//     res.redirect('./perfil')
+// })
 
-// * 404
-app.get('/*', async(req,res)=>{
-    logArchivoWarn.warn('No se encontró la ruta')
-    res.status(404).send('<h1>404! Page not found</h1>');
-})
+// app.post('/login',passport.authenticate('loginStrategy',{
+//     failureRedirect: './inicio-sesion',
+//     failureMessage:true
+// }),
+// (req,res)=>{
+//     res.redirect('./perfil')
+// })
+
+// app.get('/perfil',async(req,res)=>{
+//     if(req.isAuthenticated()){
+//         let {name} = req.user
+//         res.render('home',{user:name})
+//     }else{
+//         res.send("<div>Debes <a href='./inicio-sesion'>iniciar sesion</a> o <a href='./registro'>registrarte</a></div>")
+//     }
+// })
+
+// app.get('/logout',(req,res)=>{
+//     req.session.destroy()
+//     setTimeout(()=>{
+//             res.redirect('./inicio-sesion')
+//     },3000)
+// })
+
+// // * Public route
+// app.use(express.static(__dirname+"/public"))
+
+// // * 404
+// app.get('/*', async(req,res)=>{
+//     logArchivoWarn.warn('No se encontró la ruta')
+//     res.status(404).send('<h1>404! Page not found</h1>');
+// })

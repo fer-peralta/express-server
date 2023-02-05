@@ -1,5 +1,5 @@
-import {} from "../persistence/managers/ContainerSql.js"
+import { productApi } from "../persistence/index.js"
 
 export const getProducts = async() =>{
-    return await Containersql.getAll()
+    return await productApi.getAll()
 }

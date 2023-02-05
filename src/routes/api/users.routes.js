@@ -4,11 +4,54 @@ import bcrypt from "bcrypt"
 import passport from "passport"
 import { Strategy as LocalStrategy } from 'passport-local'
 import {UserModel} from '../../persistence/models/users.js'
-import { logArchivoError } from '../../logger.js'
+import { logArchivoError,logger } from '../../logger.js'
+import { config } from '../../config/config.js'
+import mongoose from 'mongoose'
+import handlebars from "express-handlebars"
+import session from "express-session"
+import cookieParser from 'cookie-parser'
+import MongoStore from 'connect-mongo'
+
 
 const router = express.Router()
 
 const app = express()
+
+// * HandleBars & views
+app.engine("handlebars", handlebars.engine())
+app.set("views", "./src/public/views")
+app.set("view engine", "handlebars")
+
+// ? ---------------------------------------------------------
+
+// * Cookies, session
+
+app.use(cookieParser())
+
+app.use(session({
+    store: MongoStore.create({
+        mongoUrl: config.MONGO_SESSION
+    }),
+    secret:"claveSecreta",
+    resave:false,
+    saveUninitialized:false,
+    cookie:{
+        maxAge:600000
+    }
+}))
+
+// ? --------------------------------------------------------
+
+// * Authentication DB
+const mongoUrl = config.MONGO_AUTENTICATION
+
+mongoose.connect(mongoUrl, {
+    useNewUrlParser: true,
+    useUnifiedTopology:true
+}, (err)=>{
+    if(err) return logArchivoError.error(`hubo un error: ${err}`);
+    logger.info('conexion a base de datos exitosa');
+})
 
 
 // * Passport
@@ -79,9 +122,6 @@ passport.use('loginStrategy', new LocalStrategy(
         });
     }
 ))
-
-
-
 
 router.get('/registro', async(req,res)=>{
     const errorMessage = req.session.messages ? req.session.messages[0] : '';
