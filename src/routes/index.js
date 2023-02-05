@@ -3,11 +3,8 @@ import { ProductRouter } from "./api/products.routes.js"
 import { InfoRouter } from "./api/info.routes.js"
 import { UserRouter } from "./api/users.routes.js"
 import { logArchivoWarn } from "../logger.js"
-import { productApi } from "../persistence/index.js"
-import handlebars from "express-handlebars"
 
 const router = express.Router()
-
 
 router.use("/products",ProductRouter)
 router.use("/info",InfoRouter)

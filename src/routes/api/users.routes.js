@@ -1,65 +1,13 @@
 import express from 'express'
-
-import bcrypt from "bcrypt"
-import passport from "passport"
+import passport from 'passport'
 import { Strategy as LocalStrategy } from 'passport-local'
-import {UserModel} from '../../persistence/models/users.js'
-import { logArchivoError,logger } from '../../logger.js'
-import { config } from '../../config/config.js'
-import mongoose from 'mongoose'
-import handlebars from "express-handlebars"
-import session from "express-session"
-import cookieParser from 'cookie-parser'
-import MongoStore from 'connect-mongo'
-
+import { UserModel } from '../../persistence/models/users.js';
+import bcrypt from 'bcrypt'
+import {logger} from '../../logger.js'
 
 const router = express.Router()
 
-const app = express()
-
-// * HandleBars & views
-app.engine("handlebars", handlebars.engine())
-app.set("views", "./src/public/views")
-app.set("view engine", "handlebars")
-
-// ? ---------------------------------------------------------
-
-// * Cookies, session
-
-app.use(cookieParser())
-
-app.use(session({
-    store: MongoStore.create({
-        mongoUrl: config.MONGO_SESSION
-    }),
-    secret:"claveSecreta",
-    resave:false,
-    saveUninitialized:false,
-    cookie:{
-        maxAge:600000
-    }
-}))
-
-// ? --------------------------------------------------------
-
-// * Authentication DB
-const mongoUrl = config.MONGO_AUTENTICATION
-
-mongoose.connect(mongoUrl, {
-    useNewUrlParser: true,
-    useUnifiedTopology:true
-}, (err)=>{
-    if(err) return logArchivoError.error(`hubo un error: ${err}`);
-    logger.info('conexion a base de datos exitosa');
-})
-
-
-// * Passport
-
-app.use(passport.initialize())
-app.use(passport.session())
-
-// * Serializing
+ //serializar
 passport.serializeUser((user,done)=>{
     done(null, user.id)
 })
@@ -71,17 +19,17 @@ passport.deserializeUser((id, done)=>{
     })
 })
 
-// * Encrypt password
+//crear una funcion para encriptar la contraseñas;
 const createHash = (password)=>{
-    const hash = bcrypt.hashSync(password,bcrypt.genSaltSync(10))
-    return hash
+    const hash = bcrypt.hashSync(password,bcrypt.genSaltSync(10));
+    return hash;
 }
-// * Validate the password
+//Validar contraseña
 const isValidPassword = (user, password)=>{
     return bcrypt.compareSync(password, user.password);
 }
 
-// * Passport Strategy create User
+//passport strategy crear usuario
 passport.use('signupStrategy', new LocalStrategy({
     passReqToCallback:true,
     usernameField: "email",
@@ -105,29 +53,29 @@ passport.use('signupStrategy', new LocalStrategy({
     }
 ))
 
-// * Passport Strategy Login
+// passport strategy iniciar sesion
 passport.use('loginStrategy', new LocalStrategy(
     (username, password, done) => {
         logger.info(username);
         UserModel.findOne({ username: username }, (err, user)=> {
-            logger.info(user);
+        logger.info(user);
             if (err) return done(err);
             if (!user) return done(null, false);
             if (!user.password) return done(null, false);
             if (!isValidPassword(user,password)){
                 logger.info('existen datos')
-                return done(null,false,{message:'Contraseña inválida'})
+                return done(null,false,{message:'password invalida'})
             }
             return done(null, user);
         });
     }
-))
+));
 
 router.get('/registro', async(req,res)=>{
     const errorMessage = req.session.messages ? req.session.messages[0] : '';
-    logArchivoError.error(req.session);
+    logger.info(req.session);
     res.render('signup',{error:errorMessage})
-    req.session.messages = []
+    req.session.messages =[]
 })
 
 router.get('/inicio-sesion', (req,res)=>{
@@ -135,26 +83,27 @@ router.get('/inicio-sesion', (req,res)=>{
 })
 
 router.post('/signup',passport.authenticate('signupStrategy',{
-    failureRedirect:'./registro',
+    failureRedirect:'/api/user/registro',
     failureMessage:true
 }),(req,res)=>{
-    res.redirect('./perfil')
+    res.redirect('/api/user/perfil')
 })
 
 router.post('/login',passport.authenticate('loginStrategy',{
-    failureRedirect: './inicio-sesion',
+    failureRedirect: '/api/user/inicio-sesion',
     failureMessage:true
 }),
 (req,res)=>{
-    res.redirect('./perfil')
+    res.redirect('/api/user/perfil')
 })
+
 
 router.get('/perfil',async(req,res)=>{
     if(req.isAuthenticated()){
         let {name} = req.user
-        res.render('home',{user:name})
+        res.render('form',{user:name})
     }else{
-        res.send("<div>Debes <a href='./inicio-sesion'>iniciar sesion</a> o <a href='./registro'>registrarte</a></div>")
+        res.send("<div>Debes <a href='/api/user/inicio-sesion'>inciar sesion</a> o <a href='/api/user/registro'>registrarte</a></div>")
     }
 })
 

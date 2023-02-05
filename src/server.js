@@ -118,7 +118,7 @@ else {
 
     const normalizarMensajes = async()=>{
         const results = await chatApi.getAll();
-        logger.info(results)
+        // logger.info(results)
         let sinNormalizarTamaño = JSON.stringify(results).length
         const messagesNormalized = normalizarData(results);
         let normalizadoTamaño = JSON.stringify(messagesNormalized).length
@@ -130,12 +130,9 @@ else {
     }
 }
 
-
 // * Read in JSON
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
-
-
 
 // * HandleBars & views
 app.engine("handlebars", handlebars.engine())
