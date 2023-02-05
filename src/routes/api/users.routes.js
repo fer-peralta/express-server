@@ -83,25 +83,25 @@ router.get('/inicio-sesion', (req,res)=>{
 })
 
 router.post('/signup',passport.authenticate('signupStrategy',{
-    failureRedirect:'/api/user/registro',
+    failureRedirect:'/api/users/registro',
     failureMessage:true
 }),(req,res)=>{
-    res.redirect('/api/user/perfil')
+    res.redirect('/api/users/perfil')
 })
 
 router.post('/login',passport.authenticate('loginStrategy',{
-    failureRedirect: '/api/user/inicio-sesion',
+    failureRedirect: '/api/users/inicio-sesion',
     failureMessage:true
 }),
 (req,res)=>{
-    res.redirect('/api/user/perfil')
+    res.redirect('/api/users/perfil')
 })
 
 
 router.get('/perfil',async(req,res)=>{
     if(req.isAuthenticated()){
         let {name} = req.user
-        res.render('form',{user:name})
+        res.render('home',{user:name})
     }else{
         res.send("<div>Debes <a href='/api/user/inicio-sesion'>inciar sesion</a> o <a href='/api/user/registro'>registrarte</a></div>")
     }
@@ -110,7 +110,7 @@ router.get('/perfil',async(req,res)=>{
 router.get('/logout',(req,res)=>{
     req.session.destroy()
     setTimeout(()=>{
-            res.redirect('./inicio-sesion')
+            res.redirect('/api/users/inicio-sesion')
     },3000)
 })
 
