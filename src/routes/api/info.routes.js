@@ -1,12 +1,12 @@
-import express, { application } from 'express'
+import express from 'express'
 import {fork} from 'child_process'
 import os from "os"
 
 import compression from 'compression'
 
-const routerInfo = express.Router()
+const router = express.Router()
 
-routerInfo.get('/',(req,res)=>{
+router.get('/',(req,res)=>{
     
     res.json({Version_de_Node_JS : process.version,
     Nombre_de_la_plataforma: process.platform,
@@ -18,7 +18,7 @@ routerInfo.get('/',(req,res)=>{
 })
 })
 
-routerInfo.get('/randoms',(req,res)=>{
+router.get('/randoms',(req,res)=>{
 
     const child = fork("src/child/child.js");
     const {cantidad} = req.query
@@ -32,7 +32,7 @@ routerInfo.get('/randoms',(req,res)=>{
     
 })
 
-routerInfo.get('/randomsZip', compression(), (req,res)=>{
+router.get('/randomsZip', compression(), (req,res)=>{
 
     const child = fork("src/child/child.js");
     const {cantidad} = req.query
@@ -45,4 +45,4 @@ routerInfo.get('/randomsZip', compression(), (req,res)=>{
     
 })
 
-export default routerInfo
+export {router as InfoRouter}
