@@ -1,9 +1,13 @@
-import {UserManager} from "../persistence/models/index.js"
+import { getApiDao } from "../persistence/index.js";
+import { config } from "../config/config.js";
 
-export const getUsers = async ()=>{
-    return await UserManager.getAll();
+const { UserDaoContainer, ProductDaoContainer, ChatDaoContainer } = await getApiDao(config.DBTYPE)
+
+
+export const getUsers = async () => {
+    return await UserDaoContainer.getAll();
 }
 
-export const saveUser = async(body)=>{
-    return await UserManager.save(body)
+export const saveUser = async (body) => {
+    return await UserDaoContainer.save(body)
 }

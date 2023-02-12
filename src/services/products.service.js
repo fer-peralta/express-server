@@ -1,13 +1,16 @@
-import { productApi } from "../persistence/index.js"
+import { getApiDao } from "../persistence/index.js";
+import { config } from "../config/config.js";
 
-export const getProducts = async() =>{
-    return await productApi.getAll()
+const { ProductDaoContainer } = await getApiDao(config.DBTYPE)
+
+export const getProducts = async () => {
+    return await ProductDaoContainer.getAll()
 }
 
-export const getProductsById = async(id) =>{
-    return await productApi.getById(id)
+export const getProductsById = async (id) => {
+    return await ProductDaoContainer.getById(id)
 }
 
-export const saveProduct = async(newProduct) =>{
-    return await productApi.save(newProduct)
+export const saveProduct = async (newProduct) => {
+    return await ProductDaoContainer.save(newProduct)
 }

@@ -8,5 +8,6 @@ export const config = {
     MARIADB_HOST: process.env.MARIADB_HOST,
     MONGO_AUTENTICATION: process.env.MONGO_AUTENTICATION,
     MONGO_SESSION: process.env.MONGO_SESSION,
-    PORT: process.env.PORT || 8080
+    PORT: process.env.PORT || 8080,
+    DBTYPE: process.env.DBTYPE || "MONGO"
 };
