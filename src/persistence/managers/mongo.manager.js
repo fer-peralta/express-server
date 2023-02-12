@@ -60,6 +60,17 @@ class MongoContainer {
             return { message: `Error al borrar todo: ${error}` };
         }
     }
+
+    async findOne(datos) {
+        try {
+            const user = await this.model(
+                { username: datos.username })
+            return user
+        } catch (err) {
+            console.log(err);
+        }
+
+    }
 }
 
 export { MongoContainer }

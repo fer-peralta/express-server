@@ -73,8 +73,8 @@ passport.use('loginStrategy', new LocalStrategy(
 const router = express.Router()
 
 router.get('/registro', async (req, res) => {
+    logger.info("entrada a registro")
     const errorMessage = req.session.messages ? req.session.messages[0] : '';
-    logger.info(req.session);
     res.render('signup', { error: errorMessage })
     req.session.messages = []
 })
@@ -87,6 +87,7 @@ router.post('/signup', passport.authenticate('signupStrategy', {
     failureRedirect: '/api/users/registro',
     failureMessage: true
 }), (req, res) => {
+    logger.info("Entrada a signup")
     res.redirect('/api/users/perfil')
 })
 
