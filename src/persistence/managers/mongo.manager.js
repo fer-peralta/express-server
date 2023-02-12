@@ -1,3 +1,4 @@
+import { convertToDto } from "../dtos/user.dto.js";
 class MongoContainer {
     constructor(model) {
         this.model = model;
@@ -9,7 +10,9 @@ class MongoContainer {
             if (!object) {
                 return { message: `Error al buscar: no se encontró el id ${id}`, error: true };
             } else {
-                return { message: object, error: false };
+                const responseDto = convertToDto(object)
+                console.log(responseDto)
+                return { message: responseDto, error: false };
             }
         } catch (error) {
             return { message: `Hubo un error ${error}`, error: true };
@@ -18,10 +21,12 @@ class MongoContainer {
 
     async getAll() {
         try {
-            const objects = await this.model.find();
-            return objects;
+            const response = await this.model.find();
+            const data = JSON.parse(JSON.stringify(response))
+            const responseDto = convertToDto(data)
+            return responseDto;
         } catch (error) {
-            return [];
+            throw new Error(`Hubo un error ${error}`)
         }
     }
 

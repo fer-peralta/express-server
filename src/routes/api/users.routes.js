@@ -4,6 +4,7 @@ import { Strategy as LocalStrategy } from 'passport-local'
 import { UserModel } from '../../persistence/models/users.model.js';
 import bcrypt from 'bcrypt'
 import { logger } from '../../logger.js'
+import { getUsersController } from '../../controllers/users.controller.js';
 
 
 //serializar
@@ -72,6 +73,16 @@ passport.use('loginStrategy', new LocalStrategy(
 
 const router = express.Router()
 
+router.get("/", async (req, res) => {
+    try {
+        const response = await getUsersController()
+        res.status(200).json(response)
+    } catch (error) {
+        console.log(error)
+        res.json({ message: `Hubo un error ${error}` })
+    }
+})
+
 router.get('/registro', async (req, res) => {
     logger.info("entrada a registro")
     const errorMessage = req.session.messages ? req.session.messages[0] : '';
@@ -115,5 +126,7 @@ router.get('/logout', (req, res) => {
         res.redirect('/api/users/inicio-sesion')
     }, 3000)
 })
+
+
 
 export { router as UserRouter }
