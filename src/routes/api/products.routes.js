@@ -4,36 +4,36 @@ import { logger } from '../../logger.js';
 
 const router = express.Router();
 
-router.get('/',async(req,res)=>{
-    try{
+router.get('/', async (req, res) => {
+    try {
         const response = await getProducts()
-        res.render("partials/products",{products: response})
-        // res.status(200).send({data: response});
+        // res.render("partials/products",{products: response})
+        res.status(200).send({ data: response });
     }
-    catch(error) {
-        res.json({message: `Hubo un error ${error}`})
+    catch (error) {
+        res.json({ message: `Hubo un error ${error}` })
     }
 })
 
-router.get('/:id',async(req,res)=>{
-    try{
+router.get('/:id', async (req, res) => {
+    try {
         const response = await getProductsById(parseInt(req.params.id))
-        if(response){
+        if (response) {
             return res.send(response)
-        } 
+        }
     }
-    catch(error){
+    catch (error) {
         return res.send(`Hubo un error: ${error}`)
     }
 })
 
-router.post('/',async(req,res)=>{
-    try{
+router.post('/', async (req, res) => {
+    try {
         const newProduct = await saveProduct(req.body);
         logger.info(`Se ha añadido un nuevo producto a la base de datos`)
         return res.send(newProduct)
     }
-    catch(error){
+    catch (error) {
         return res.send(`Hubo un error: ${error}`)
     }
 })
@@ -60,4 +60,4 @@ router.post('/',async(req,res)=>{
 
 // ? --------------------------------------
 
-export {router as ProductRouter}
+export { router as ProductRouter }
