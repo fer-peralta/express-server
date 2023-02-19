@@ -186,3 +186,5 @@ app.use(express.static(__dirname + "/public"))
 //     }
 //     res.render("products-test",{products: test})
 // })
+
+export { app }

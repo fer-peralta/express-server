@@ -1,18 +1,16 @@
 import supertest from "supertest";
 import { expect } from "chai"
+import { app } from "../../src/server.js"
 
-describe("", () => {
-    it("", async () => {
-        const response = await request.get("/products")
-        console.log(response)
+const request = supertest(app)
+
+describe("Api products test", () => {
+    it("Get products", async () => {
+        const response = await request.get("/api/products")
         expect(response.status).equal(200)
     })
-})
-
-describe("", () => {
-    it("", async () => {
-        const response = await request.get("/products")
-        console.log(response)
+    it("Get products by id", async () => {
+        const response = await request.get("/api/products/1")
         expect(response.status).equal(200)
     })
 })
