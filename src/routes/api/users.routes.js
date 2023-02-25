@@ -127,6 +127,4 @@ router.get('/logout', (req, res) => {
     }, 3000)
 })
 
-
-
 export { router as UserRouter }
