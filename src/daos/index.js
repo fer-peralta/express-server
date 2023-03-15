@@ -1,7 +1,7 @@
 import {options} from "../config/dbConfig.js";
 import mongoose from 'mongoose';
 
-import { logger } from "../loggers/loggers.js";
+import { logger } from "../logs/loggers.js";
 
 import {config} from "../config/config.js"
 

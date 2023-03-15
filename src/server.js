@@ -4,7 +4,7 @@ import { productsRouter } from "./routes/products.js";
 import { authRouter } from "./routes/auth.js";
 
 
-import {logger} from "./loggers/loggers.js"
+import {logger} from "./logs/loggers.js"
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import {options} from "./config/dbConfig.js"
@@ -65,18 +65,6 @@ app.use(passport.session())
 app.use('/api/auth', authRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
-
-// app.get('/', async(req,res)=>{
-//     res.render("home",{products: await productosApi.getAll()})
-// })
-
-// app.get("/chat", async(req,res)=>{
-//     res.render("chat",{messages: await chatApi.getAll()})
-// })
-
-// app.get("/products", async(req,res)=>{
-//     res.render("chat",{products: await productosApi.getAll()})
-// })
 
 // * PORT and listen server
 const PORT = process.pid.PORT || 8080 || 8081;

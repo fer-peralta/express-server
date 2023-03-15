@@ -4,7 +4,7 @@ import passport from "passport"
 import bcrypt from "bcrypt"
 import { Strategy as LocalStrategy } from "passport-local"
 import {UserModel} from "../models/user.models.js"
-import { logger } from "../loggers/loggers.js"
+import { logger } from "../logs/loggers.js"
 
 import { checkLogin } from "../middlewares/checkLogin.js"
 

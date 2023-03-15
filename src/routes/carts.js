@@ -1,6 +1,6 @@
 import express from "express";
 import {ContenedorDaoProductos, ContenedorDaoCarritos} from "../daos/index.js"
-import { logger } from "../loggers/loggers.js";
+import { logger } from "../logs/loggers.js";
 import { checkLogin } from "../middlewares/checkLogin.js"
 import { transporterEmail, emailAdmin } from "../messages/email.js"
 import {twilioClient, adminPhone, twilioWhatsapp, adminWhatsapp} from "../messages/sms.js"

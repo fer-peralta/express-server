@@ -2,7 +2,7 @@ import express from "express"
 import { checkAdminRole } from "../middlewares/checkRole.js"
 import {ContenedorDaoProductos} from "../daos/index.js"
 import { checkLogin } from "../middlewares/checkLogin.js"
-import { logger } from "../loggers/loggers.js"
+import { logger } from "../logs/loggers.js"
 
 const productosApi = ContenedorDaoProductos
 
