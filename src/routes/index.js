@@ -1,10 +1,13 @@
 import express from "express"
 import { loggerWarn } from "../database/logs/loggers.js"
 import { productRouter } from "./api/product.route.js"
+import { cartRouter } from "./api/cart.route.js"
 
 const router = express.Router()
 
 router.use("/products", productRouter)
+
+router.use("/carts", cartRouter)
 
 //* 404
 router.get('/*', (req, res) => {

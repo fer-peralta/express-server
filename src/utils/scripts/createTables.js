@@ -1,5 +1,5 @@
 //importar las options
-import { options } from "../config/dbConfig.js";
+import { options } from "../../config/dbConfig.js";
 
 //importamos knex y utilizando las options nos conectamos a la base de datos.
 import knex from "knex";
@@ -8,29 +8,29 @@ import knex from "knex";
 const databaseSqliteDb = knex(options.sqliteDB);
 
 //creamos la tabla de productos
-const createTables = async()=>{
+const createTables = async () => {
     try {
         //0. verificamos si la tabla ya existe
         const tableProductsExists = await databaseSqliteDb.schema.hasTable("productos");
-        if(tableProductsExists){
+        if (tableProductsExists) {
             await databaseSqliteDb.schema.dropTable("productos");
         }
         //1.crear la tabla productos
-        await databaseSqliteDb.schema.createTable("productos",table=>{
+        await databaseSqliteDb.schema.createTable("productos", table => {
             table.increments("id");
-            table.string("title",40).nullable(false);
+            table.string("title", 40).nullable(false);
             table.integer("price").nullable(false);
-            table.string("thumbnail",200).nullable(false);
+            table.string("thumbnail", 200).nullable(false);
         });
         console.log("productos table created");
 
         //0. verificamos si la tabla ya existe
         const tableCartExists = await databaseSqliteDb.schema.hasTable("carritos");
-        if(tableCartExists){
+        if (tableCartExists) {
             await databaseSqliteDb.schema.dropTable("carritos");
         }
         //1.crear la tabla productos
-        await databaseSqliteDb.schema.createTable("carritos",table=>{
+        await databaseSqliteDb.schema.createTable("carritos", table => {
             table.increments("id");
             table.string("timestamp").nullable(false);
             table.string("products").nullable(false);

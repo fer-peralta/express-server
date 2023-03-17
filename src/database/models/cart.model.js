@@ -6,8 +6,7 @@ mongoose.set('strictQuery', true)
 
 const cartsSchema = new mongoose.Schema({
     products: {
-        type: Array,
-        required: true
+        type: Array, required: true
     }
 },
     { timestamps: true }
