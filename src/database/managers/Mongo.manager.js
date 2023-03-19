@@ -8,7 +8,7 @@ export class MongoManager {
     async saveData(data) {
         try {
             const object = await this.model.create(data);
-            return `New document was saved with the id: ${object._id}`
+            return { message: `New document was saved`, id: object._id }
         } catch (error) {
             loggerError.error({ message: `There was an error saving the document: ${error}` })
             return { message: `There was an error saving the document: ${error}` };

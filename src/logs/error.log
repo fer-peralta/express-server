@@ -1,0 +1,15 @@
+[2023-03-19T12:28:37.543] [ERROR] error - {
+  message: 'There was an error searching the document with the id New document was saved with the id: 64172a251b4184854482f10b: CastError: Cast to ObjectId failed for value "New document was saved with the id: 64172a251b4184854482f10b" (type string) at path "_id" for model "carts"'
+}
+[2023-03-19T12:28:52.006] [ERROR] error - {
+  message: 'There was an error searching the document with the id New document was saved with the id: 64172a33ecf58b458a0c4149: CastError: Cast to ObjectId failed for value "New document was saved with the id: 64172a33ecf58b458a0c4149" (type string) at path "_id" for model "carts"'
+}
+[2023-03-19T14:59:20.205] [ERROR] error - {
+  message: 'There was an error showing the documents: ReferenceError: convertToDto is not defined'
+}
+[2023-03-19T15:22:42.674] [ERROR] error - {
+  message: 'There was an error searching the document with the id 63db1a09b4b952fb982cc096: ReferenceError: data is not defined'
+}
+[2023-03-19T15:23:00.156] [ERROR] error - {
+  message: 'There was an error searching the document with the id 64172c43cba844a477f99cdf: ReferenceError: data is not defined'
+}

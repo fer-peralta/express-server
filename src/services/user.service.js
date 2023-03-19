@@ -12,5 +12,13 @@ export const saveUser = async (data) => {
 }
 
 export const findUser = async (id) => {
-    return await UserDaoContainer.findOne(id)
+    return await UserDaoContainer.getById(id)
+}
+
+export const updateUser = async (id) => {
+    return await UserDaoContainer.updateById(id)
+}
+
+export const deleteUser = async (id) => {
+    return await UserDaoContainer.deleteById(id)
 }

@@ -3,7 +3,7 @@ import { getProducts, saveProduct, findProduct, updateProduct, deleteProduct } f
 export const getProductsController = async (req, res) => {
     try {
         const response = await getProducts();
-        response ? res.status(200).send({ data: response }) : res.status(200).send({ message: `No hay turnos` })
+        response ? res.status(200).send({ data: response }) : res.status(200).send({ message: `No hay productos` })
     } catch (error) {
         res.status(400).send({ message: `Hubo un error ${error}` })
     }

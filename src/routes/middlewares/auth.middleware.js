@@ -2,7 +2,7 @@ import passport from 'passport'
 import { Strategy as LocalStrategy } from 'passport-local'
 import bcrypt from 'bcrypt'
 import { UserModel } from '../../database/models/user.model.js'
-import { logger } from '../../config/logger.js'
+import { loggerInfo, loggerError, loggerWarn } from "../../database/logs/loggers.js"
 
 passport.serializeUser((user, done) => {
     done(null, user.id)
@@ -28,8 +28,9 @@ const signUpStrategy = new LocalStrategy({
     passwordField: 'password',
     passReqToCallback: true,
 }, async (req, username, password, done) => {
-    logger.info(password);
+    loggerInfo.info(password);
     UserModel.findOne({ username: username }, (error, userFound) => {
+        console.log("hola")
         if (error) return done(error, null, { message: 'hubo un error' })
         if (userFound) return done(null, null, { message: 'el usuario existe' })
         const newUser = {
@@ -37,7 +38,7 @@ const signUpStrategy = new LocalStrategy({
             username: username,
             password: createHash(password)
         }
-        logger.info(newUser);
+        loggerInfo.info(newUser);
         UserModel.create(newUser, (error, userCreated) => {
             if (error) return done(error, null, { message: 'error al registrar' })
             return done(null, userCreated, { message: 'usuario creado' })
@@ -50,14 +51,14 @@ const logInStrategy = new LocalStrategy({
     passwordField: 'password',
     passReqToCallback: true,
 }, async (req, username, password, done) => {
-    logger.info(username);
+    loggerInfo.info(username);
     UserModel.findOne({ username: username }, (err, user) => {
-        logger.info(user);
+        loggerInfo.info(user);
         if (err) return done(err);
         if (!user) return done(null, false);
         if (!user.password) return done(null, false);
         if (!isValidPassword(user, password)) {
-            logger.info('existen datos')
+            loggerInfo.info('existen datos')
             return done(null, false, { message: 'password invalida' })
         }
         return done(null, user);

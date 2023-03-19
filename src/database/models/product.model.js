@@ -8,7 +8,8 @@ const productSchema = new mongoose.Schema({
     name: { type: String, required: true, minLength: 2 },
     price: { type: Number, required: true },
     stock: { type: Number, required: true },
-    url: { type: String, required: true }
+    url: { type: String, required: true },
+    quantity: { type: Number }
 },
     { timestamps: true }
 )
