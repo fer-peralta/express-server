@@ -13,3 +13,90 @@
 [2023-03-19T15:23:00.156] [ERROR] error - {
   message: 'There was an error searching the document with the id 64172c43cba844a477f99cdf: ReferenceError: data is not defined'
 }
+[2023-03-20T14:11:43.513] [ERROR] error - {
+  message: 'There was an error searching the document with the id profile: CastError: Cast to ObjectId failed for value "profile" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T14:12:04.804] [ERROR] error - {
+  message: 'There was an error searching the document with the id 63db1d742ab596af76f51134: ReferenceError: data is not defined'
+}
+[2023-03-20T14:23:47.362] [ERROR] error - {
+  message: 'There was an error searching the document with the id 63db1d742ab596af76f51134: ReferenceError: data is not defined'
+}
+[2023-03-20T14:26:15.708] [ERROR] error - {
+  message: 'There was an error searching the document with the id profile: CastError: Cast to ObjectId failed for value "profile" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T14:27:44.977] [ERROR] error - {
+  message: 'There was an error searching the document with the id profile: CastError: Cast to ObjectId failed for value "profile" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T14:29:20.326] [ERROR] error - {
+  message: 'There was an error searching the document with the id profile: CastError: Cast to ObjectId failed for value "profile" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T14:29:51.376] [ERROR] error - {
+  message: 'There was an error searching the document with the id logout: CastError: Cast to ObjectId failed for value "logout" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T14:31:09.223] [ERROR] error - {
+  message: 'There was an error searching the document with the id profile: CastError: Cast to ObjectId failed for value "profile" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T14:32:23.014] [ERROR] error - {
+  message: 'There was an error searching the document with the id profile: CastError: Cast to ObjectId failed for value "profile" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T14:36:50.139] [ERROR] error - {
+  message: 'There was an error searching the document with the id logout: CastError: Cast to ObjectId failed for value "logout" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T14:39:33.094] [ERROR] error - {
+  message: 'There was an error searching the document with the id logout: CastError: Cast to ObjectId failed for value "logout" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T14:40:53.307] [ERROR] error - {
+  message: 'There was an error searching the document with the id logout: CastError: Cast to ObjectId failed for value "logout" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T14:41:35.741] [ERROR] error - {
+  message: 'There was an error searching the document with the id logout: CastError: Cast to ObjectId failed for value "logout" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T14:42:37.531] [ERROR] error - {
+  message: 'There was an error searching the document with the id logout: CastError: Cast to ObjectId failed for value "logout" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T14:42:48.110] [ERROR] error - {
+  message: 'There was an error searching the document with the id logoutsss: CastError: Cast to ObjectId failed for value "logoutsss" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T14:45:28.565] [ERROR] error - {
+  message: 'There was an error searching the document with the id logout: CastError: Cast to ObjectId failed for value "logout" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T14:45:48.139] [ERROR] error - {
+  message: 'There was an error searching the document with the id profile: CastError: Cast to ObjectId failed for value "profile" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T14:45:52.382] [ERROR] error - {
+  message: 'There was an error searching the document with the id logout: CastError: Cast to ObjectId failed for value "logout" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T14:45:56.286] [ERROR] error - {
+  message: 'There was an error searching the document with the id profile: CastError: Cast to ObjectId failed for value "profile" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T14:48:16.451] [ERROR] error - {
+  message: 'There was an error searching the document with the id logout: CastError: Cast to ObjectId failed for value "logout" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T14:56:32.532] [ERROR] error - {
+  message: 'There was an error searching the document with the id logout: CastError: Cast to ObjectId failed for value "logout" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T14:57:03.510] [ERROR] error - {
+  message: 'There was an error searching the document with the id logout: CastError: Cast to ObjectId failed for value "logout" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T15:28:08.874] [ERROR] error - {
+  message: 'There was an error searching the document with the id logout: CastError: Cast to ObjectId failed for value "logout" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T23:29:27.899] [ERROR] error - {
+  message: 'There was an error searching the document with the id hola: CastError: Cast to ObjectId failed for value "hola" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T23:31:12.908] [ERROR] error - {
+  message: 'There was an error searching the document with the id profile: CastError: Cast to ObjectId failed for value "profile" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T23:31:21.487] [ERROR] error - {
+  message: 'There was an error searching the document with the id profile: CastError: Cast to ObjectId failed for value "profile" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T23:31:23.723] [ERROR] error - {
+  message: 'There was an error searching the document with the id profile: CastError: Cast to ObjectId failed for value "profile" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T23:31:32.105] [ERROR] error - {
+  message: 'There was an error searching the document with the id profile: CastError: Cast to ObjectId failed for value "profile" (type string) at path "_id" for model "users"'
+}
+[2023-03-20T23:35:16.865] [ERROR] error - {
+  message: 'There was an error searching the document with the id hola: CastError: Cast to ObjectId failed for value "hola" (type string) at path "_id" for model "users"'
+}

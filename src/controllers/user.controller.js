@@ -1,4 +1,9 @@
 import { getUsers, saveUser, findUser, updateUser } from "../services/user.service.js";
+import passport from 'passport'
+import { signUpStrategy, logInStrategy } from '../routes/middlewares/auth.middleware.js'
+
+passport.use('signupStrategy', signUpStrategy)
+passport.use('loginStrategy', logInStrategy)
 
 export const getUsersController = async (req, res) => {
     try {
@@ -9,7 +14,7 @@ export const getUsersController = async (req, res) => {
     }
 }
 
-export const saveUserController = async (req, res) => {
+export const SignUpUserController = async (req, res) => {
     try {
         const response = await saveUser(req.body);
         res.status(200).json({ data: response });
@@ -25,6 +30,35 @@ export const findUserController = async (req, res) => {
     } catch (error) {
         res.status(400).json({ message: `Hubo un error ${error}` })
     }
+}
+export const logInUserController = async (req, res, next) => {
+    // loggerInfo.info(req.body)
+    passport.authenticate("loginStrategy", (error, user, info) => {
+        if (error || !user) return res.json({ message: info.message })
+        req.logIn(user, function (error) {
+            console.log("Usuario logueado")
+            if (error) return res.json({ message: `Hubo un error al autenticar el usuario: ${error}` })
+            // res.json({ user, message: info.message })
+            res.json({ user })
+        })
+
+    })(req, res, next)
+}
+
+export const logOutUserController = async (req, res) => {
+    req.session.destroy()
+    req.logOut((error) => {
+        if (error) return res.status(400).json({ message: `Error al cerrar sesión: ${error}` })
+        res.status(200).json({ message: `Sesión finalizada` })
+
+    })
+}
+export const profileUserController = async (req, res) => {
+    console.log(req.user)
+    res.status(200).json({
+        message: "Datos del usuario",
+        Usuario: req.user
+    })
 }
 
 // export const findOneController = async (req, done) => {

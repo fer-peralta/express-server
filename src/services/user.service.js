@@ -8,7 +8,7 @@ export const getUsers = async () => {
 }
 
 export const saveUser = async (data) => {
-    return await UserDaoContainer.save(data)
+    return await UserDaoContainer.saveData(data)
 }
 
 export const findUser = async (id) => {

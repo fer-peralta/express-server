@@ -33,8 +33,6 @@ export class MongoManager {
             if (!documentToFind) {
                 return { message: `There was an error, ${id} not found`, error: true };
             } else {
-                // const responseDto = convertToDto(object)
-                // return { message: responseDto, error: false };
                 return { message: `Document found succesfully`, data: documentToFind, error: false };
             }
         } catch (error) {

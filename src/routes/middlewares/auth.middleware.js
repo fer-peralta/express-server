@@ -30,7 +30,7 @@ const signUpStrategy = new LocalStrategy({
 }, async (req, username, password, done) => {
     loggerInfo.info(password);
     UserModel.findOne({ username: username }, (error, userFound) => {
-        console.log("hola")
+        console.log("hola desde signup")
         if (error) return done(error, null, { message: 'hubo un error' })
         if (userFound) return done(null, null, { message: 'el usuario existe' })
         const newUser = {

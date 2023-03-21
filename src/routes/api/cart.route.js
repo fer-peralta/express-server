@@ -5,7 +5,7 @@ import { checkLogin } from "../middlewares/checkLogin.js"
 
 const router = express.Router()
 
-router.get('/', /*checkLogin,*/ getCartsController)
+router.get('/', checkLogin, getCartsController)
 
 router.get('/:id', checkLogin, findCartController)
 
