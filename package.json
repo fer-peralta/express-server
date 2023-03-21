@@ -7,8 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon src/server.js",
-    "artillery-cluster":"artillery quick -c 20 -n 10 -k  http://localhost:8080/api/products > result_cluster.txt",
-    "artillery-fork":"artillery quick -c 20 -n 10 -k  http://localhost:8080/api/products > result_fork.txt"
+    "artillery-cluster": "artillery quick -c 20 -n 10 -k  http://localhost:8080/api/products > result_cluster.txt",
+    "artillery-fork": "artillery quick -c 20 -n 10 -k  http://localhost:8080/api/products > result_fork.txt"
   },
   "repository": {
     "type": "git",

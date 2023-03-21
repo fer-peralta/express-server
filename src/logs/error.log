@@ -100,3 +100,58 @@
 [2023-03-20T23:35:16.865] [ERROR] error - {
   message: 'There was an error searching the document with the id hola: CastError: Cast to ObjectId failed for value "hola" (type string) at path "_id" for model "users"'
 }
+[2023-03-21T13:23:43.236] [ERROR] error - There was an error sending the mail Error: Invalid login: 535-5.7.8 Username and Password not accepted. Learn more at
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials w14-20020a056870b38e00b001723f29f6e2sm4407239oap.37 - gsmtp
+    at SMTPConnection._formatError (C:\Users\fergu\OneDrive\Escritorio\Full Stack CoderHouse\04 Backend\Proyecto Back-end\03 entregable\node_modules\nodemailer\lib\smtp-connection\index.js:790:19)
+    at SMTPConnection._actionAUTHComplete (C:\Users\fergu\OneDrive\Escritorio\Full Stack CoderHouse\04 Backend\Proyecto Back-end\03 entregable\node_modules\nodemailer\lib\smtp-connection\index.js:1548:34)
+    at SMTPConnection.<anonymous> (C:\Users\fergu\OneDrive\Escritorio\Full Stack CoderHouse\04 Backend\Proyecto Back-end\03 entregable\node_modules\nodemailer\lib\smtp-connection\index.js:546:26)
+    at SMTPConnection._processResponse (C:\Users\fergu\OneDrive\Escritorio\Full Stack CoderHouse\04 Backend\Proyecto Back-end\03 entregable\node_modules\nodemailer\lib\smtp-connection\index.js:953:20)
+    at SMTPConnection._onData (C:\Users\fergu\OneDrive\Escritorio\Full Stack CoderHouse\04 Backend\Proyecto Back-end\03 entregable\node_modules\nodemailer\lib\smtp-connection\index.js:755:14)
+    at TLSSocket.SMTPConnection._onSocketData (C:\Users\fergu\OneDrive\Escritorio\Full Stack CoderHouse\04 Backend\Proyecto Back-end\03 entregable\node_modules\nodemailer\lib\smtp-connection\index.js:193:44)
+    at TLSSocket.emit (node:events:513:28)
+    at addChunk (node:internal/streams/readable:315:12)
+    at readableAddChunk (node:internal/streams/readable:289:9)
+    at TLSSocket.Readable.push (node:internal/streams/readable:228:10) {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. Learn more at\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials w14-20020a056870b38e00b001723f29f6e2sm4407239oap.37 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+[2023-03-21T13:27:44.598] [ERROR] error - There was an error sending the mail Error: Invalid login: 535-5.7.8 Username and Password not accepted. Learn more at
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials p185-20020acabfc2000000b00386e0bb0153sm4099427oif.7 - gsmtp
+    at SMTPConnection._formatError (C:\Users\fergu\OneDrive\Escritorio\Full Stack CoderHouse\04 Backend\Proyecto Back-end\03 entregable\node_modules\nodemailer\lib\smtp-connection\index.js:790:19)
+    at SMTPConnection._actionAUTHComplete (C:\Users\fergu\OneDrive\Escritorio\Full Stack CoderHouse\04 Backend\Proyecto Back-end\03 entregable\node_modules\nodemailer\lib\smtp-connection\index.js:1548:34)
+    at SMTPConnection.<anonymous> (C:\Users\fergu\OneDrive\Escritorio\Full Stack CoderHouse\04 Backend\Proyecto Back-end\03 entregable\node_modules\nodemailer\lib\smtp-connection\index.js:546:26)
+    at SMTPConnection._processResponse (C:\Users\fergu\OneDrive\Escritorio\Full Stack CoderHouse\04 Backend\Proyecto Back-end\03 entregable\node_modules\nodemailer\lib\smtp-connection\index.js:953:20)
+    at SMTPConnection._onData (C:\Users\fergu\OneDrive\Escritorio\Full Stack CoderHouse\04 Backend\Proyecto Back-end\03 entregable\node_modules\nodemailer\lib\smtp-connection\index.js:755:14)
+    at TLSSocket.SMTPConnection._onSocketData (C:\Users\fergu\OneDrive\Escritorio\Full Stack CoderHouse\04 Backend\Proyecto Back-end\03 entregable\node_modules\nodemailer\lib\smtp-connection\index.js:193:44)
+    at TLSSocket.emit (node:events:513:28)
+    at addChunk (node:internal/streams/readable:315:12)
+    at readableAddChunk (node:internal/streams/readable:289:9)
+    at TLSSocket.Readable.push (node:internal/streams/readable:228:10) {
+  code: 'EAUTH',
+  response: '535-5.7.8 Username and Password not accepted. Learn more at\n' +
+    '535 5.7.8  https://support.google.com/mail/?p=BadCredentials p185-20020acabfc2000000b00386e0bb0153sm4099427oif.7 - gsmtp',
+  responseCode: 535,
+  command: 'AUTH PLAIN'
+}
+[2023-03-21T14:12:21.844] [ERROR] error - { message: 'There was an error: null' }
+[2023-03-21T14:12:29.650] [ERROR] error - { message: 'There was an error: null' }
+[2023-03-21T14:12:52.913] [ERROR] error - { message: 'There was an error: null' }
+[2023-03-21T14:12:55.746] [ERROR] error - { message: 'There was an error: null' }
+[2023-03-21T14:13:03.729] [ERROR] error - { message: 'There was an error: null' }
+[2023-03-21T14:13:03.830] [ERROR] error - { message: 'There was an error: undefined' }
+[2023-03-21T14:14:00.695] [ERROR] error - { message: 'There was an error: null' }
+[2023-03-21T14:14:28.314] [ERROR] error - { message: 'There was an error: null' }
+[2023-03-21T14:14:30.282] [ERROR] error - { message: 'There was an error: null' }
+[2023-03-21T14:14:59.374] [ERROR] error - { message: 'There was an error: null' }
+[2023-03-21T14:15:18.070] [ERROR] error - { message: 'There was an error: null' }
+[2023-03-21T14:15:27.522] [ERROR] error - { message: 'There was an error: null' }
+[2023-03-21T14:15:40.631] [ERROR] error - { message: 'There was an error: null' }
+[2023-03-21T14:16:01.589] [ERROR] error - { message: 'There was an error: null' }
+[2023-03-21T14:16:16.274] [ERROR] error - { message: 'There was an error: null' }
+[2023-03-21T14:16:43.011] [ERROR] error - { message: 'There was an error: null' }
+[2023-03-21T14:17:00.104] [ERROR] error - { message: 'There was an error: null' }
+[2023-03-21T14:18:02.267] [ERROR] error - { message: 'There was an error: null' }
+[2023-03-21T14:18:02.351] [ERROR] error - { message: 'There was an error: undefined' }

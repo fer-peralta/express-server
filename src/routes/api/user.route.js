@@ -12,32 +12,25 @@ passport.use('loginStrategy', logInStrategy)
 
 router.get('/', getUsersController)
 
+router.post("/signup", SignUpUserController)
+
+router.post("/login", logInUserController)
+
+router.get("/logout", logOutUserController)
+
+router.get("/profile", checkLogin, profileUserController)
+
 router.get('/:id', findUserController)
 
-router.post("/session/signup", SignUpUserController)
-
-router.post("/session/login", logInUserController)
-
-router.get("/session/logout", logOutUserController)
-
-router.get("/session/profile", checkLogin, profileUserController)
 
 
-
-
-
-
-
-
-
-
-router.post('/signup', passport.authenticate('signupStrategy', {
-    failureRedirect: '/api/user/registro',
-    passReqToCallback: true,
-    failureMessage: true
-}), (req, res) => {
-    res.send('ok')
-})
+// router.post('/signup', passport.authenticate('signupStrategy', {
+//     failureRedirect: '/api/user/registro',
+//     passReqToCallback: true,
+//     failureMessage: true
+// }), (req, res) => {
+//     res.send('ok')
+// })
 
 // router.post('/login', passport.authenticate('loginStrategy', {
 //     failureRedirect: '/api/user/inicio-sesion',

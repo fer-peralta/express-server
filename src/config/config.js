@@ -7,6 +7,7 @@ export const config = {
     ADMIN_GMAIL: process.env.ADMIN_GMAIL,
     PASSWORD_GMAIL: process.env.PASSWORD_GMAIL,
     MONGO_DB: process.env.MONGO_DB,
+    MONG_DB_SESSION: process.env.MONG_DB_SESSION,
     TWILIO_ACCOUNT_ID: process.env.TWILIO_ACCOUNT_ID,
     TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN,
     TWILIO_ADMIN_PHONE: process.env.TWILIO_ADMIN_PHONE,

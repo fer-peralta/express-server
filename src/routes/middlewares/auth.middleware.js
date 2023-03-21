@@ -28,20 +28,24 @@ const signUpStrategy = new LocalStrategy({
     passwordField: 'password',
     passReqToCallback: true,
 }, async (req, username, password, done) => {
-    loggerInfo.info(password);
     UserModel.findOne({ username: username }, (error, userFound) => {
-        console.log("hola desde signup")
-        if (error) return done(error, null, { message: 'hubo un error' })
-        if (userFound) return done(null, null, { message: 'el usuario existe' })
-        const newUser = {
-            name: req.body.name,
-            username: username,
-            password: createHash(password)
+        if (error) {
+            loggerError.error({ message: `There was an error: ${error}` })
+            return done(error, null, { message: `There was an error: ${error}` })
         }
-        loggerInfo.info(newUser);
+        if (userFound) return done(null, null, { message: 'The user is already in the database, try to login' })
+        const newUser = {
+            username: username,
+            password: createHash(password),
+            name: req.body.name,
+            address: req.body.address,
+            age: req.body.age,
+            telephone: req.body.telephone,
+            avatar: req.body.avatar
+        }
         UserModel.create(newUser, (error, userCreated) => {
-            if (error) return done(error, null, { message: 'error al registrar' })
-            return done(null, userCreated, { message: 'usuario creado' })
+            if (error) return done(error, null, { message: `There was an error creating the user: ${error}` })
+            return done(null, userCreated, { message: 'User sign up with success' })
         })
     })
 })
@@ -51,17 +55,17 @@ const logInStrategy = new LocalStrategy({
     passwordField: 'password',
     passReqToCallback: true,
 }, async (req, username, password, done) => {
-    loggerInfo.info(username);
-    UserModel.findOne({ username: username }, (err, user) => {
-        loggerInfo.info(user);
-        if (err) return done(err);
-        if (!user) return done(null, false);
-        if (!user.password) return done(null, false);
-        if (!isValidPassword(user, password)) {
-            loggerInfo.info('existen datos')
-            return done(null, false, { message: 'password invalida' })
+    UserModel.findOne({ username: username }, (error, user) => {
+        if (error) {
+            loggerError.error({ message: `There was an error: ${error}` })
+            return done(error, { message: `There was an error: ${error}` })
         }
-        return done(null, user);
+        if (!user) return done(null, false, { message: `The username is incorrect` });
+        if (!username) return done(null, false, { message: `There's missing credentials` });
+        if (!user.password) return done(null, false, { message: `The password is incorrect` });
+        if (!isValidPassword(user, password)) return done(null, false, { message: 'The password is incorrect' })
+        if (req.user) if (username === req.user.username) return done(null, false, { message: `The user is already logged in` })
+        return done(null, user, { message: "User log in with success" });
     });
 }
 )

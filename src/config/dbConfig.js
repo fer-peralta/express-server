@@ -22,6 +22,7 @@ export const options = {
         databaseUrl:""
     },
     MongoDB:{
-        url: config.MONGO_DB
+        url: config.MONGO_DB,
+        urlSession: config.MONG_DB_SESSION
     }
 }
