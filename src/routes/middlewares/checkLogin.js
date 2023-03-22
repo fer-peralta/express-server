@@ -3,6 +3,6 @@ export const checkLogin = (req, res, next) => {
         next()
     }
     else {
-        res.json({ message: `Por favor inicia sesión` })
+        res.json({ message: `Please log in if you have an account, if not you have to sign up` })
     }
 }

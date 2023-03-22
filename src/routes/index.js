@@ -3,6 +3,7 @@ import { loggerWarn } from "../database/logs/loggers.js"
 import { productRouter } from "./api/product.route.js"
 import { cartRouter } from "./api/cart.route.js"
 import { userRouter } from "./api/user.route.js"
+import { checkoutRouter } from "./api/checkout.route.js"
 
 const router = express.Router()
 
@@ -11,6 +12,8 @@ router.use("/products", productRouter)
 router.use("/carts", cartRouter)
 
 router.use("/users", userRouter)
+
+router.use("/checkout", checkoutRouter)
 
 //* 404
 router.get('/*', (req, res) => {

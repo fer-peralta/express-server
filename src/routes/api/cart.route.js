@@ -1,26 +1,24 @@
 
 import express from "express"
-import { getCartsController, findCartController, saveCartController, updateCartController, deleteCartController, saveProductToCartController } from "../../controllers/cart.controller.js"
+import * as CartController from "../../controllers/cart.controller.js"
 import { checkLogin } from "../middlewares/checkLogin.js"
 
 const router = express.Router()
 
-router.get('/', checkLogin, getCartsController)
+router.get('/', checkLogin, CartController.getCartsController)
 
-router.get('/:id', checkLogin, findCartController)
+router.get('/:id', checkLogin, CartController.findCartController)
 
-router.get('/:id/products', checkLogin, findCartController)
+router.get('/:id/products', checkLogin, CartController.findCartController)
 
-router.get('/:id/products/:productId', checkLogin, findCartController)
+router.get('/:id/products/:productId', checkLogin, CartController.findCartController)
 
-router.post('/', checkLogin, saveCartController)
+router.post('/', checkLogin, CartController.saveCartController)
 
-router.post('/:id/products/:productId', checkLogin, saveProductToCartController)
+router.post('/:id/products/:productId', checkLogin, CartController.saveProductToCartController)
 
-router.put('/:id', checkLogin, updateCartController)
+router.delete('/:id', checkLogin, CartController.deleteCartController)
 
-router.delete('/:id', checkLogin, deleteCartController)
-
-router.post('/checkout', checkLogin, saveCartController)
+router.delete('/:id/products/:productId', checkLogin, CartController.deleteProductInCartController)
 
 export { router as cartRouter }

@@ -15,10 +15,6 @@ export const findCart = async (id) => {
     return await CartDaoContainer.getById(id)
 }
 
-export const updateCart = async (id, body) => {
-    return await CartDaoContainer.updateById(id, body)
-}
-
 export const deleteCart = async (id) => {
     return await CartDaoContainer.deleteById(id)
 }
