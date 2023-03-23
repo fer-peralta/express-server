@@ -6,6 +6,7 @@ mongoose.set('strictQuery', true)
 
 const orderSchema = new mongoose.Schema({
     username: { type: String, required: true },
+    userId: { type: String, required: true },
     cart: [{
         id: String,
         name: String,
@@ -15,7 +16,7 @@ const orderSchema = new mongoose.Schema({
     total: { type: Number, required: true },
     state: { type: String, default: 'generada', required: true }
 },
-    { timestamps }
+    { timestamps: true }
 )
 
 export const OrderModel = mongoose.model(orderCollection, orderSchema)

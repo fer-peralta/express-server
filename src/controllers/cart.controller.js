@@ -1,6 +1,6 @@
 import { CartModel } from "../database/models/cart.model.js";
 import { UserModel } from "../database/models/user.model.js";
-import { getCarts, saveCart, deleteCart, findCart } from "../services/cart.service.js";
+import { getCarts, saveCart, deleteCart, findCart, updateCart } from "../services/cart.service.js";
 import { findProduct } from "../services/product.service.js"
 import { findUser } from "../services/user.service.js";
 

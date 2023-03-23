@@ -1,0 +1,108 @@
+[2023-03-23T10:00:38.617] [ERROR] error - { message: 'There was an error: ReferenceError: state is not defined' }
+[2023-03-23T10:02:12.441] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading 'cart')"
+}
+[2023-03-23T10:07:23.621] [ERROR] error - {
+  message: 'There was an error: ReferenceError: update is not defined'
+}
+[2023-03-23T10:09:06.832] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading 'products')"
+}
+[2023-03-23T10:09:15.242] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading 'products')"
+}
+[2023-03-23T10:09:37.606] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading 'products')"
+}
+[2023-03-23T10:10:01.280] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading 'products')"
+}
+[2023-03-23T10:10:10.339] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading 'products')"
+}
+[2023-03-23T10:11:55.493] [ERROR] error - {
+  message: 'There was an error: ReferenceError: findUser is not defined'
+}
+[2023-03-23T10:12:10.222] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading 'products')"
+}
+[2023-03-23T10:13:12.396] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading '_id')"
+}
+[2023-03-23T10:13:25.186] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading 'products')"
+}
+[2023-03-23T10:16:17.287] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading 'products')"
+}
+[2023-03-23T17:08:28.356] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading '_id')"
+}
+[2023-03-23T17:14:14.653] [ERROR] error - {
+  message: 'There was an error: ReferenceError: findOrder is not defined'
+}
+[2023-03-23T17:19:40.237] [ERROR] error - { message: 'There was an error: ReferenceError: order is not defined' }
+[2023-03-23T17:21:35.174] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading '_id')"
+}
+[2023-03-23T17:21:51.739] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading '_id')"
+}
+[2023-03-23T17:22:39.061] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading '_id')"
+}
+[2023-03-23T17:23:38.057] [ERROR] error - {
+  message: 'There was an error: ReferenceError: userId is not defined'
+}
+[2023-03-23T17:30:35.613] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading '_id')"
+}
+[2023-03-23T17:30:50.453] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading '_id')"
+}
+[2023-03-23T17:31:07.763] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading '_id')"
+}
+[2023-03-23T17:31:54.353] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading '_id')"
+}
+[2023-03-23T17:52:03.254] [ERROR] error - {
+  message: 'There was an error: ReferenceError: orderfromUser is not defined'
+}
+[2023-03-23T17:52:16.233] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading '_id')"
+}
+[2023-03-23T17:53:21.886] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading '_id')"
+}
+[2023-03-23T18:02:24.875] [ERROR] error - { message: 'There was an error: ReferenceError: acc is not defined' }
+[2023-03-23T18:03:26.262] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading 'reduce')"
+}
+[2023-03-23T18:03:29.028] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading 'reduce')"
+}
+[2023-03-23T18:18:12.439] [ERROR] error - { message: 'There was an error: ReferenceError: obj is not defined' }
+[2023-03-23T18:58:59.893] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot create property 'state' on string '641ccad59399c95ee9b7d54e'"
+}
+[2023-03-23T19:00:52.088] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading 'data')"
+}
+[2023-03-23T19:01:18.565] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading 'data')"
+}
+[2023-03-23T19:14:05.862] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading 'data')"
+}
+[2023-03-23T19:14:51.983] [ERROR] error - { message: 'There was an error: ReferenceError: order is not defined' }
+[2023-03-23T19:34:26.579] [ERROR] error - {
+  message: 'There was an error: ReferenceError: adminOrderSend is not defined'
+}
+[2023-03-23T19:34:47.926] [ERROR] error - {
+  message: "There was an error: TypeError: Cannot read properties of undefined (reading 'name')"
+}
+[2023-03-23T19:46:46.057] [ERROR] error - {
+  message: 'There was an error: ReferenceError: userOrderSMSSend is not defined'
+}
+[2023-03-23T19:47:07.698] [ERROR] error - There was an error sending the SMS to the user: Error: The 'To' number +54112253122 is not a valid phone number.

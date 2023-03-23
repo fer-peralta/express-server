@@ -12,7 +12,8 @@ const userSchema = new mongoose.Schema({
     age: { type: Number, required: true },
     telephone: { type: String, required: true },
     avatar: { type: String, required: true },
-    cart: { type: Object }
+    cart: { type: Object },
+    order: { type: Object }
 },
     { timestamps: true }
 )
